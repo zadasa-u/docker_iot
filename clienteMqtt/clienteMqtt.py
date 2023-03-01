@@ -1,11 +1,8 @@
-import asyncio, ssl, certifi, logging
+import asyncio, ssl, certifi, logging, os
 from asyncio_mqtt import Client, ProtocolVersion
 from environs import Env
 
-env = Env()
-env.read_env() #lee el archivo con las variables. por defecto .env
-
-logging.basicConfig(format='%(asctime)s - cliente mqtt - %(levelname)s:%(message)s', level=logging.INFO, datefmt='%d/%m/%Y %H:%M:%S')
+logging.basicConfig(format='%(asctime)s - cliente mqtt - %(levelname)s:%(message)s', level=logging.INFO, datefmt='%d/%m/%Y %H:%M:%S %z')
 
 async def main():
     tls_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
@@ -16,7 +13,7 @@ async def main():
     tls_context.load_default_certs()
 
     async with Client(
-        env("SERVIDOR"),
+        os.environ['SERVIDOR'],
         protocol=ProtocolVersion.V31,
         port=8883,
         tls_context=tls_context,
