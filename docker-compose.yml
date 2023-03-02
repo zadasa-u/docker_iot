@@ -1,5 +1,28 @@
 version: "3"
 services:
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=America/Argentina/Buenos_Aires
+    volumes:
+      - /home/iot/docker/mariadb:/config
+    ports:
+      - 3306:3306
+    restart: unless-stopped
+  phpmyadmin:
+      image: phpmyadmin
+      container_name: phpmyadmin
+      restart: always
+      environment:
+        - PMA_HOST=mariadb
+      ports:
+        - 8080:80
+      links:
+        - mariadb
   clientemqtt:
     image: clientemqtt
     container_name: clientemqtt
@@ -7,4 +30,10 @@ services:
       - TZ=America/Argentina/Buenos_Aires 
       - SERVIDOR=${SERVIDOR} #Se reemplazará por la env var SERVIDOR defineda en .env
       - TOPICO=${TOPICO}
+      - MARIADB_SERVER=${MARIADB_SERVER}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_USER_PASS=${MARIADB_USER_PASS}
+      - MARIADB_DB=${MARIADB_DB}
     restart: unless-stopped
+    depends_on:
+      - mariadb

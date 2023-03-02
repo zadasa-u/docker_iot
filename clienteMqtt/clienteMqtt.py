@@ -1,4 +1,4 @@
-import asyncio, ssl, certifi, logging, os
+import asyncio, ssl, certifi, logging, os, aiomysql, json, traceback
 from asyncio_mqtt import Client, ProtocolVersion
 from environs import Env
 
@@ -12,16 +12,39 @@ async def main():
     tls_context.check_hostname = True
     tls_context.load_default_certs()
 
+
     async with Client(
-        os.environ['SERVIDOR'],
+        os.getenv("SERVIDOR"),
         protocol=ProtocolVersion.V31,
         port=8883,
         tls_context=tls_context,
     ) as client:
         async with client.messages() as messages:
-            await client.subscribe(os.environ['TOPICO'])
+            await client.subscribe('#')
             async for message in messages:
                 logging.info(str(message.topic) + ": " + message.payload.decode("utf-8"))
+                datos=json.loads(message.payload.decode('utf8'))
+                sql = "INSERT INTO `mediciones` (`sensor_id`, `temperatura`, `humedad`) VALUES (%s, %s, %s)"
+                try:
+                    conn = await aiomysql.connect(host=os.getenv("MARIADB_SERVER"), port=3306,
+                                                user=os.getenv("MARIADB_USER"),
+                                                password=os.getenv("MARIADB_USER_PASS"),
+                                                db=os.getenv("MARIADB_DB"))
+                except Exception as e:
+                    logging.error(traceback.format_exc())
+
+                cur = await conn.cursor()
+
+                async with conn.cursor() as cur:
+                    try:
+                        await cur.execute(sql, (message.topic, datos['temperatura'], datos['humedad']))
+                    except Exception as e:
+                        logging.error(traceback.format_exc())
+                        # Logs the error appropriately. 
+                    await conn.commit()
+
+                conn.close()
+
 
 if __name__ == "__main__":
     asyncio.run(main())
