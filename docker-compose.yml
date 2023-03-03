@@ -37,3 +37,16 @@ services:
     restart: unless-stopped
     depends_on:
       - mariadb
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    user: "1000"
+    volumes:
+      - /home/iot/docker/grafana:/var/lib/grafana
+    ports:
+      - 3000:3000
+    depends_on:
+      - mariadb
+    environment:
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+    restart: unless-stopped
