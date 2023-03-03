@@ -136,3 +136,6 @@ dmypy.json
 #swag related files: ignore all except NGINX conf
 swag/config/*
 !swag/config/nginx/site-confs/default.conf
+
+mariadb/
+mosquitto/

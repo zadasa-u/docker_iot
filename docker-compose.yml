@@ -9,7 +9,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - TZ=America/Argentina/Buenos_Aires
     volumes:
-      - /home/iot/docker/mariadb:/config
+      - ~/docker/mariadb:/config
     ports:
       - 3306:3306
     restart: unless-stopped
@@ -37,3 +37,11 @@ services:
     restart: unless-stopped
     depends_on:
       - mariadb
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    user: "1000:1000"
+    ports:
+      - 1883:1883
+      - 8883:8883
+    restart: unless-stopped
