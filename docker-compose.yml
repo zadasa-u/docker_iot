@@ -14,15 +14,15 @@ services:
       - 3306:3306
     restart: unless-stopped
   phpmyadmin:
-      image: phpmyadmin
-      container_name: phpmyadmin
-      restart: always
-      environment:
-        - PMA_HOST=mariadb
-      ports:
-        - 8080:80
-      links:
-        - mariadb
+    image: phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      - PMA_HOST=mariadb
+    ports:
+      - 8080:80
+    depends_on:
+      - mariadb
   clientemqtt:
     image: clientemqtt
     container_name: clientemqtt
