@@ -45,3 +45,7 @@ services:
       - 1883:1883
       - 8883:8883
     restart: unless-stopped
+    volumes:
+      - ~/docker/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ~/docker/mosquitto/config:/mosquitto/config
+
