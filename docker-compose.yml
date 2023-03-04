@@ -37,6 +37,17 @@ services:
     restart: unless-stopped
     depends_on:
       - mariadb
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    user: "1000:1000"
+    ports:
+      - 1883:1883
+      - 8883:8883
+    restart: unless-stopped
+    volumes:
+      - ~/docker/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ~/docker/mosquitto/config:/mosquitto/config
   grafana:
     image: grafana/grafana
     container_name: grafana
