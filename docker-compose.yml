@@ -19,7 +19,7 @@ services:
     restart: always
     environment:
       - PMA_HOST=mariadb
-      - PMA_ABSOLUTE_URI=https://${DOMINIO}:10000/phpmyadmin/
+      - PMA_ABSOLUTE_URI=https://${DOMINIO}:${PUERTO}/phpmyadmin/
     ports:
       - 8080:80
     depends_on:
@@ -60,6 +60,10 @@ services:
     depends_on:
       - mariadb
     environment:
+      GF_SERVER_PROTOCOL: http
+      GF_SERVER_ROOT_URL: https://${DOMINIO}:${PUERTO}/grafana/
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+      GF_SERVER_DOMAIN: ${DOMINIO}
       GF_ANALYTICS_REPORTING_ENABLED: "false"
     restart: unless-stopped
   portainer:
@@ -87,7 +91,7 @@ services:
     volumes:
       - ~/docker/swag:/config
     ports:
-      - 10000:443
+      - ${PUERTO}:443
       - 80:80
     restart: unless-stopped
 volumes:
