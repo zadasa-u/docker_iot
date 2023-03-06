@@ -35,6 +35,8 @@ services:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_USER_PASS=${MARIADB_USER_PASS}
       - MARIADB_DB=${MARIADB_DB}
+      - MQTT_USR=${MQTT_USR}
+      - MQTT_PASS=${MQTT_PASS}
     restart: unless-stopped
     depends_on:
       - mariadb
@@ -49,6 +51,9 @@ services:
     volumes:
       - ~/docker/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
       - ~/docker/mosquitto/config:/mosquitto/config
+      - ~/docker/swag/etc/letsencrypt:/var/tmp
+      - ~/docker/mosquitto/data:/mosquitto/data
+      - ~/docker/mosquitto/log:/mosquitto/log
   grafana:
     image: grafana/grafana
     container_name: grafana
