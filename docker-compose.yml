@@ -86,7 +86,7 @@ services:
     volumes:
       - ~/docker/swag:/config
     ports:
-      - 10000:443
+      - ${PUERTO}:443
       - 80:80
     restart: unless-stopped
 volumes:
