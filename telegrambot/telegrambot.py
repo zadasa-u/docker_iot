@@ -23,7 +23,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def acercade(update: Update, context):
     await context.bot.send_message(update.message.chat.id, text="Este bot fue creado para el curso de IoT (2023)")
 
-
 def main() -> None:
     application = Application.builder().token(token).build()
 
