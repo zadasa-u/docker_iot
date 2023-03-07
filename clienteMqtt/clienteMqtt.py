@@ -1,6 +1,5 @@
 import asyncio, ssl, certifi, logging, os, aiomysql, json, traceback
 from asyncio_mqtt import Client, ProtocolVersion
-from environs import Env
 
 logging.basicConfig(format='%(asctime)s - cliente mqtt - %(levelname)s:%(message)s', level=logging.INFO, datefmt='%d/%m/%Y %H:%M:%S %z')
 
