@@ -32,9 +32,7 @@ async def main():
                 except Exception as e:
                     logging.error(traceback.format_exc())
 
-                cur = await conn.cursor()
-
-                async with conn.cursor() as cur:
+               async with conn.cursor() as cur:
                     try:
                         await cur.execute(sql, (message.topic, datos['temperatura'], datos['humedad']))
                     except Exception as e:
