@@ -14,8 +14,8 @@ async def main():
 
     async with Client(
         os.environ["SERVIDOR"],
-        username=os.getenv("MQTT_USR"),
-        password=os.getenv("MQTT_PASS"),
+        username=os.environ["MQTT_USR"],
+        password=os.environ["MQTT_PASS"],
         protocol=ProtocolVersion.V31,
         port=8883,
         tls_context=tls_context,
