@@ -14,7 +14,7 @@ async def main():
 
 
     async with Client(
-        os.getenv("SERVIDOR"),
+        os.environ["SERVIDOR"],
         protocol=ProtocolVersion.V31,
         port=8883,
         tls_context=tls_context,
@@ -26,10 +26,10 @@ async def main():
                 datos=json.loads(message.payload.decode('utf8'))
                 sql = "INSERT INTO `mediciones` (`sensor_id`, `temperatura`, `humedad`) VALUES (%s, %s, %s)"
                 try:
-                    conn = await aiomysql.connect(host=os.getenv("MARIADB_SERVER"), port=3306,
-                                                user=os.getenv("MARIADB_USER"),
-                                                password=os.getenv("MARIADB_USER_PASS"),
-                                                db=os.getenv("MARIADB_DB"))
+                    conn = await aiomysql.connect(host=os.environ["MARIADB_SERVER"], port=3306,
+                                                user=os.environ["MARIADB_USER"],
+                                                password=os.environ["MARIADB_USER_PASS"],
+                                                db=os.environ["MARIADB_DB"])
                 except Exception as e:
                     logging.error(traceback.format_exc())
 
