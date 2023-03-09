@@ -1,6 +1,8 @@
 import logging, os, aiomysql, traceback, asyncio, locale
+import matplotlib.pyplot as plt
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+from io import BytesIO
 
 token=os.environ["TB_TOKEN"]
 
@@ -16,7 +18,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         apellido=update.message.from_user.last_name
     else:
         apellido=""
-    kb = [["temperatura"],["humedad"]]
+    kb = [["temperatura"],["humedad"],["gráfico temperatura"],["gráfico humedad"]]
     await context.bot.send_message(update.message.chat.id, text="Bienvenido al Bot "+ nombre + " " + apellido,reply_markup=ReplyKeyboardMarkup(kb))
     # await update.message.reply_text("Bienvenido al Bot "+ nombre + " " + apellido) # también funciona
 
@@ -52,12 +54,40 @@ async def medicion(update: Update, context):
         logging.info("La última {} es de {} {}, medida a las {:%H:%M:%S %d/%m/%Y}".format(update.message.text, r[1], unidad, r[0]))
     conn.close()
 
+async def graficos(update: Update, context):
+    logging.info(update.message.text)
+    sql = f"SELECT timestamp, {update.message.text.split()[1]} FROM mediciones where id mod 2 = 0 AND timestamp >= NOW() - INTERVAL 1 DAY ORDER BY timestamp"
+    conn = await aiomysql.connect(host=os.environ["MARIADB_SERVER"], port=3306,
+                                    user=os.environ["MARIADB_USER"],
+                                    password=os.environ["MARIADB_USER_PASS"],
+                                    db=os.environ["MARIADB_DB"])
+    async with conn.cursor() as cur:
+        await cur.execute(sql)
+        filas = await cur.fetchall()
+
+        fig, ax = plt.subplots(figsize=(7, 4))
+        fecha,var=zip(*filas)
+        ax.plot(fecha,var)
+        ax.grid(True, which='both')
+        ax.set_title(update.message.text, fontsize=14, verticalalignment='bottom')
+        ax.set_xlabel('fecha')
+        ax.set_ylabel('unidad')
+
+        buffer = BytesIO()
+        fig.tight_layout()
+        fig.savefig(buffer, format='png')
+        buffer.seek(0)
+        await context.bot.send_photo(chat_id=update.effective_chat.id, photo=buffer)
+    conn.close()
+
+
 def main():
     application = Application.builder().token(token).build()
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('acercade', acercade))
     application.add_handler(CommandHandler('kill', kill))
     application.add_handler(MessageHandler(filters.Regex("^(temperatura|humedad)$"), medicion))
+    application.add_handler(MessageHandler(filters.Regex("^(gráfico temperatura|gráfico humedad)$"), graficos))
     application.run_polling()
 
 if __name__ == '__main__':
