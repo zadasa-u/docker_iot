@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 import logging, os
 
-token=os.environ["TOKEN"]
+token=os.environ["TB_TOKEN"]
 
 logging.basicConfig(format='%(asctime)s - TelegramBot - %(levelname)s - %(message)s', level=logging.INFO)
 
