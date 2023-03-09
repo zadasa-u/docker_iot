@@ -13,7 +13,7 @@ async def main():
 
 
     async with Client(
-        os.environ["SERVIDOR"),
+        os.environ["SERVIDOR"],
         username=os.environ["MQTT_USR"],
         password=os.environ["MQTT_PASS"],
         protocol=ProtocolVersion.V31,
