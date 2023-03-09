@@ -1,6 +1,5 @@
 import asyncio, ssl, certifi, logging, os, aiomysql, json, traceback
 from asyncio_mqtt import Client, ProtocolVersion
-from environs import Env
 
 logging.basicConfig(format='%(asctime)s - cliente mqtt - %(levelname)s:%(message)s', level=logging.INFO, datefmt='%d/%m/%Y %H:%M:%S %z')
 
@@ -14,9 +13,9 @@ async def main():
 
 
     async with Client(
-        os.getenv("SERVIDOR"),
-        username=os.getenv("MQTT_USR"),
-        password=os.getenv("MQTT_PASS"),
+        os.environ["SERVIDOR"],
+        username=os.environ["MQTT_USR"],
+        password=os.environ["MQTT_PASS"],
         protocol=ProtocolVersion.V31,
         port=8883,
         tls_context=tls_context,
@@ -28,14 +27,12 @@ async def main():
                 datos=json.loads(message.payload.decode('utf8'))
                 sql = "INSERT INTO `mediciones` (`sensor_id`, `temperatura`, `humedad`) VALUES (%s, %s, %s)"
                 try:
-                    conn = await aiomysql.connect(host=os.getenv("MARIADB_SERVER"), port=3306,
-                                                user=os.getenv("MARIADB_USER"),
-                                                password=os.getenv("MARIADB_USER_PASS"),
-                                                db=os.getenv("MARIADB_DB"))
+                    conn = await aiomysql.connect(host=os.environ["MARIADB_SERVER"], port=3306,
+                                                user=os.environ["MARIADB_USER"],
+                                                password=os.environ["MARIADB_USER_PASS"],
+                                                db=os.environ["MARIADB_DB"])
                 except Exception as e:
                     logging.error(traceback.format_exc())
-
-                cur = await conn.cursor()
 
                 async with conn.cursor() as cur:
                     try:
