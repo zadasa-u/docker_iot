@@ -2,17 +2,16 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
 import os
 
-# initializations
 app = Flask(__name__)
 
-app.config["MYSQL_USER"] = "crud"
-app.config["MYSQL_PASSWORD"] = "B(5XsOTjyFPUY.ih"
-app.config["MYSQL_DB"] = "agenda"
-app.config["MYSQL_HOST"] = "172.19.0.1"
+app.config["MYSQL_USER"] = os.environ["MYSQL_USER"]
+app.config["MYSQL_PASSWORD"] = os.environ["MYSQL_PASSWORD"]
+app.config["MYSQL_DB"] = os.environ["MYSQL_DB"]
+app.config["MYSQL_HOST"] = os.environ["MYSQL_HOST"]
 # app.config["MYSQL_CURSORCLASS"] = "DictCursor"
 mysql = MySQL(app)
 
-# routes
+# rutas
 @app.route('/')
 def index():
     cur = mysql.connection.cursor()
@@ -32,7 +31,3 @@ def add_contact():
                     , (nombre, tel, email))
         mysql.connection.commit()
         return redirect(url_for('index'))
-
-# starting the app
-if __name__ == "__main__":
-    app.run(port=5000, debug=True,host='0.0.0.0')

@@ -112,5 +112,20 @@ services:
     restart: unless-stopped
     depends_on:
       - mariadb
+  crud:
+    image: crud
+    build:
+      context: ./crud
+    container_name: crud
+    environment:
+      - MYSQL_USER=${CRUD_USER}
+      - MYSQL_PASSWORD=${CRUD_PASS}
+      - MYSQL_DB=${CRUD_DB}
+      - MYSQL_HOST=${MARIADB_SERVER}
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    depends_on:
+      - mariadb
 volumes:
   portainer_data:
