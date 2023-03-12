@@ -27,7 +27,7 @@
       <td>{{contacto.3}}</td>
       <td>
         <a href="/edit/{{contacto.0}}">editar</a>
-        <a href="/delete/{{contacto.0}}">borrar</a>
+        <a href="{{url_for('borrar_contacto',id=contacto.0)}}">borrar</a>
       </td>
     </tr>
     {% endfor %}
