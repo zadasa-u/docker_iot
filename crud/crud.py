@@ -18,7 +18,7 @@ app.config["MYSQL_USER"] = os.environ["MYSQL_USER"]
 app.config["MYSQL_PASSWORD"] = os.environ["MYSQL_PASSWORD"]
 app.config["MYSQL_DB"] = os.environ["MYSQL_DB"]
 app.config["MYSQL_HOST"] = os.environ["MYSQL_HOST"]
-app.config['PERMANENT_SESSION_LIFETIME']=20
+app.config['PERMANENT_SESSION_LIFETIME']=180
 mysql = MySQL(app)
 
 # rutas
@@ -28,7 +28,6 @@ def require_login(f):
     def decorated_function(*args, **kwargs):
         if session.get("user_id") is None:
             return redirect(url_for('login'))
-        g.usuario=session.get("user_id")
         return f(*args, **kwargs)
     return decorated_function
 
@@ -144,5 +143,5 @@ def actualizar_contacto(id):
 @require_login
 def logout():
     session.clear()
-    logging.info("el usuario {} cerró su sesión".format(g.usuario))
+    logging.info("el usuario {} cerró su sesión".format(session.get("user_id")))
     return redirect(url_for('index'))
