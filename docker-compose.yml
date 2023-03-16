@@ -23,17 +23,3 @@ services:
       - 8080:80
     depends_on:
       - mariadb
-  clientemqtt:
-    image: clientemqtt
-    container_name: clientemqtt
-    environment:
-      - TZ=America/Argentina/Buenos_Aires 
-      - SERVIDOR=${SERVIDOR} #Se reemplazará por la env var SERVIDOR defineda en .env
-      - TOPICO=${TOPICO}
-      - MARIADB_SERVER=${MARIADB_SERVER}
-      - MARIADB_USER=${MARIADB_USER}
-      - MARIADB_USER_PASS=${MARIADB_USER_PASS}
-      - MARIADB_DB=${MARIADB_DB}
-    restart: unless-stopped
-    depends_on:
-      - mariadb
