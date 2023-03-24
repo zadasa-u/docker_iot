@@ -37,13 +37,12 @@ async def main():
                 async with conn.cursor() as cur:
                     try:
                         await cur.execute(sql, (message.topic, datos['temperatura'], datos['humedad']))
+                        await conn.commit()
+                        await cur.close()
+                        await conn.ensure_closed()
                     except Exception as e:
                         logging.error(traceback.format_exc())
                         # Logs the error appropriately. 
-                    await conn.commit()
-
-                conn.close()
-
 
 if __name__ == "__main__":
     asyncio.run(main())
