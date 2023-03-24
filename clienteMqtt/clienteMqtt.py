@@ -42,8 +42,5 @@ async def main():
                         logging.error(traceback.format_exc())
                         # Logs the error appropriately. 
 
-                conn.close()
-
-
 if __name__ == "__main__":
     asyncio.run(main())
