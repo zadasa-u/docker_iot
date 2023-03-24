@@ -42,5 +42,5 @@ async def main():
                         logging.error(traceback.format_exc())
                         # Logs the error appropriately. 
 
- if __name__ == "__main__":
+if __name__ == "__main__":
     asyncio.run(main())
