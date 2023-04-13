@@ -25,6 +25,8 @@ services:
       - mariadb
   clientemqtt:
     image: clientemqtt
+    build:
+      context: ./clienteMqtt
     container_name: clientemqtt
     environment:
       - TZ=America/Argentina/Buenos_Aires 

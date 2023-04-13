@@ -19,10 +19,11 @@ async def main():
         tls_context=tls_context,
     ) as client:
         async with client.messages() as messages:
-            await client.subscribe('#')
+            await client.subscribe(os.environ["TOPICO"])
             async for message in messages:
                 logging.info(str(message.topic) + ": " + message.payload.decode("utf-8"))
                 datos=json.loads(message.payload.decode('utf8'))
+                dispositivo=str(message.topic)
                 sql = "INSERT INTO `mediciones` (`sensor_id`, `temperatura`, `humedad`) VALUES (%s, %s, %s)"
                 try:
                     conn = await aiomysql.connect(host=os.environ["MARIADB_SERVER"], port=3306,
@@ -36,7 +37,7 @@ async def main():
 
                 async with conn.cursor() as cur:
                     try:
-                        await cur.execute(sql, (message.topic, datos['temperatura'], datos['humedad']))
+                        await cur.execute(sql, (dispositivo.split('/')[1], datos['temperatura'], datos['humedad']))
                         await conn.commit()
                         await cur.close()
                         await conn.ensure_closed()
