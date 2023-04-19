@@ -92,7 +92,6 @@ services:
       - URL=${DOMINIO}
       - VALIDATION=dns
       - DNSPLUGIN=duckdns
-      - DUCKDNSTOKEN=${DUCKDNSTOKEN}
       - SUBDOMAINS=
     volumes:
       - ~/docker/swag:/config
