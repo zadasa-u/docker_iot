@@ -137,3 +137,4 @@ dmypy.json
 swag/
 grafana/
 mosquitto/
+wireguard/
