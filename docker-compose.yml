@@ -81,7 +81,7 @@ services:
       - portainer_data:/data
     restart: unless-stopped
   swag:
-    image: linuxserver/swag
+    image: lscr.io/linuxserver/swag:latest
     container_name: swag
     cap_add:
       - NET_ADMIN
@@ -90,13 +90,14 @@ services:
       - PGID=1000
       - TZ=America/Argentina/Buenos_Aires
       - URL=${DOMINIO}
-      - VALIDATION=duckdns
+      - VALIDATION=dns
+      - DNSPLUGIN=duckdns
       - DUCKDNSTOKEN=${DUCKDNSTOKEN}
       - SUBDOMAINS=
     volumes:
       - ~/docker/swag:/config
     ports:
-      - ${PUERTO}:443
+      - ${PUERTO}:443/tcp
       - 80:80
     restart: unless-stopped
 volumes:
