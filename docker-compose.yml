@@ -114,8 +114,6 @@ services:
       - mariadb
   crud:
     image: crud
-    build:
-      context: ./crud
     container_name: crud
     environment:
       - MYSQL_USER=${CRUD_USER}
@@ -128,5 +126,22 @@ services:
     restart: unless-stopped
     depends_on:
       - mariadb
+  apiiot:
+    image: apiiot
+    build:
+      context: ./apiiot
+    container_name: apiiot
+    environment:
+      - MARIADB_SERVER=${MARIADB_SERVER}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_USER_PASS=${MARIADB_USER_PASS}
+      - MARIADB_DB=${MARIADB_DB}
+      - MARIADB_TABLE=${MARIADB_TABLE}
+    ports:
+      - "8002:8002"
+    restart: unless-stopped
+    depends_on:
+      - mariadb
 volumes:
   portainer_data:
+  

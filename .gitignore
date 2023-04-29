@@ -135,7 +135,10 @@ dmypy.json
 !.env.sample
 
 #swag related files: ignore all except NGINX conf
-swag/
 grafana/
 mosquitto/
 !swag/nginx/proxy-confs/crud.subfolder.conf
+!swag/nginx/proxy-confs/fastapi.subfolder.conf
+wireguard/
+opengist/
+swag/
