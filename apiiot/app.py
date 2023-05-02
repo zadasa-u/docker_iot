@@ -19,18 +19,24 @@ url_object = URL.create(
 engine = create_async_engine(url_object)
 meta = MetaData()
 
-@app.get("/ultimos")
-async def ultima():
+async def modelo():
     async with engine.connect() as conn:
         await conn.run_sync(meta.reflect, only=[os.environ["MARIADB_TABLE"]])
-        tabla = Table(os.environ["MARIADB_TABLE"], meta, autoload_with=engine)
-        async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
-        async with async_session() as session:
-            resultado = await session.execute(select(tabla).order_by(tabla.c.id.desc()))
-            ultimos=resultado.first()
-            columnas=[c.name for c in tabla.columns]
-            ultimos_zip=zip(columnas,ultimos)
-            logging.info(ultimos)
-    await engine.dispose()
+        modelo = Table(os.environ["MARIADB_TABLE"], meta, autoload_with=engine)
+        return modelo
+
+tabla = asyncio.run(modelo())
+
+@app.get("/ultimos")
+async def ultima():
+    async_session = sessionmaker(engine, class_=AsyncSession)
+    async with async_session() as session:
+        resultado = await session.execute(select(tabla).order_by(tabla.c.id.desc()))
+        ultimos=resultado.first()
+        columnas=[c.name for c in tabla.columns]
+        ultimos_zip=zip(columnas,ultimos)
+        logging.info(ultimos)
+        await session.commit()
+    # await engine.dispose()
     return ultimos_zip
     
