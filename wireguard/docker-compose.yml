@@ -11,7 +11,7 @@ services:
       - PGID=1000
       - TZ=America/Argentina/Buenos_Aires
       - SERVERURL=cambiar.duckdns.org #optional
-      - SERVERPORT=10062 #optional
+      - SERVERPORT=cambiar #optional
       - PEERS=cambiar #optional
       - PEERDNS=auto #optional
       - INTERNAL_SUBNET=10.13.13.0 #optional
