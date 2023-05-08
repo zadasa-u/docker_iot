@@ -14,16 +14,6 @@ logging.basicConfig(format='%(asctime)s - apiiot - %(levelname)s:%(message)s', l
 app = FastAPI()
 tabla = None
 
-url_object = URL.create(
-    "mysql+aiomysql",
-    username=os.environ["MARIADB_USER"],
-    password=os.environ["MARIADB_USER_PASS"],
-    host=os.environ["MARIADB_SERVER"],
-    database=os.environ["MARIADB_DB"],
-)
-engine = create_async_engine(url_object)
-meta = MetaData()
-
 db_actor:DbAction = DbAction()
 
 @app.on_event("startup")
