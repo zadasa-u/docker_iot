@@ -24,18 +24,18 @@ url_object = URL.create(
 engine = create_async_engine(url_object)
 meta = MetaData()
 
-db_action:DbAction = DbAction()
+db_actor:DbAction = DbAction()
 
 @app.on_event("startup")
 async def initialize_model() -> None:
     global tabla
-    tabla = await db_action.instantiate_model()
+    tabla = await db_actor.instantiate_model()
 
 
 @app.get("/ultimos")
 async def ultima():
     #async_session = sessionmaker(engine, class_=AsyncSession)
-    async with db_action.async_session() as session:
+    async with db_actor.async_session() as session:
         resultado = await session.execute(select(tabla).order_by(tabla.c.id.desc()))
         ultimos=resultado.first()
         columnas=[c.name for c in tabla.columns]
