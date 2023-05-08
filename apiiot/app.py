@@ -15,6 +15,7 @@ app = FastAPI()
 tabla = None
 
 db_actor:DbAction = DbAction()
+agent: Dispatcher = Dispatcher()
 
 @app.on_event("startup")
 async def initialize_model() -> None:
