@@ -24,108 +24,108 @@ services:
       - 8080:80
     depends_on:
       - mariadb
-  clientemqtt:
-    image: 6dbfd8f9ae49
-    container_name: clientemqtt
-    environment:
-      - TZ=America/Argentina/Buenos_Aires 
-      - SERVIDOR=${SERVIDOR} #Se reemplazará por la env var SERVIDOR defineda en .env
-      - TOPICO=${TOPICO}
-      - MARIADB_SERVER=${MARIADB_SERVER}
-      - MARIADB_USER=${MARIADB_USER}
-      - MARIADB_USER_PASS=${MARIADB_USER_PASS}
-      - MARIADB_DB=${MARIADB_DB}
-      - MQTT_USR=${MQTT_USR}
-      - MQTT_PASS=${MQTT_PASS}
-    restart: unless-stopped
-    depends_on:
-      - mariadb
-  mosquitto:
-    image: eclipse-mosquitto
-    container_name: mosquitto
-    user: "1000:1000"
-    ports:
-      - 1883:1883
-      - 8883:8883
-    restart: unless-stopped
-    volumes:
-      - ~/docker/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
-      - ~/docker/mosquitto/config:/mosquitto/config
-      - ~/docker/swag/etc/letsencrypt:/var/tmp
-      - ~/docker/mosquitto/data:/mosquitto/data
-      - ~/docker/mosquitto/log:/mosquitto/log
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    user: "1000"
-    volumes:
-      - ~/docker/grafana:/var/lib/grafana
-    ports:
-      - 3000:3000
-    depends_on:
-      - mariadb
-    environment:
-      GF_SERVER_PROTOCOL: http
-      GF_SERVER_ROOT_URL: https://${DOMINIO}:${PUERTO}/grafana/
-      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
-      GF_SERVER_DOMAIN: ${DOMINIO}
-      GF_ANALYTICS_REPORTING_ENABLED: "false"
-    restart: unless-stopped
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: portainer
-    ports:
-      - 9443:9443
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-    restart: unless-stopped
-  swag:
-    image: linuxserver/swag
-    container_name: swag
-    cap_add:
-      - NET_ADMIN
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Argentina/Buenos_Aires
-      - URL=${DOMINIO}
-      - VALIDATION=duckdns
-      - DUCKDNSTOKEN=${DUCKDNSTOKEN}
-      - SUBDOMAINS=
-    volumes:
-      - ~/docker/swag:/config
-    ports:
-      - ${PUERTO}:443
-      - 80:80
-    restart: unless-stopped
-  telegrambot:
-    image: telegrambot
-    container_name: telegrambot
-    environment:
-      - TZ=America/Argentina/Buenos_Aires 
-      - TB_TOKEN=${TB_TOKEN}
-      - MARIADB_SERVER=${MARIADB_SERVER}
-      - MARIADB_USER=${MARIADB_USER}
-      - MARIADB_USER_PASS=${MARIADB_USER_PASS}
-      - MARIADB_DB=${MARIADB_DB}
-    restart: unless-stopped
-    depends_on:
-      - mariadb
-  crud:
-    image: crud
-    container_name: crud
-    environment:
-      - MYSQL_USER=${CRUD_USER}
-      - MYSQL_PASSWORD=${CRUD_PASS}
-      - MYSQL_DB=${CRUD_DB}
-      - MYSQL_HOST=${MARIADB_SERVER}
-      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
-    ports:
-      - "8000:8000"
-    restart: unless-stopped
-    depends_on:
-      - mariadb
+  #clientemqtt:
+  #  image: 6dbfd8f9ae49
+  #  container_name: clientemqtt
+  #  environment:
+  #    - TZ=America/Argentina/Buenos_Aires 
+  #    - SERVIDOR=${SERVIDOR} #Se reemplazará por la env var SERVIDOR defineda en .env
+  #    - TOPICO=${TOPICO}
+  #    - MARIADB_SERVER=${MARIADB_SERVER}
+  #    - MARIADB_USER=${MARIADB_USER}
+  #    - MARIADB_USER_PASS=${MARIADB_USER_PASS}
+  #    - MARIADB_DB=${MARIADB_DB}
+  #    - MQTT_USR=${MQTT_USR}
+  #    - MQTT_PASS=${MQTT_PASS}
+  #  restart: unless-stopped
+  #  depends_on:
+  #    - mariadb
+  #mosquitto:
+  #  image: eclipse-mosquitto
+  #  container_name: mosquitto
+  #  user: "1000:1000"
+  #  ports:
+  #    - 1883:1883
+  #    - 8883:8883
+  #  restart: unless-stopped
+  #  volumes:
+  #    - ~/docker/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+  #    - ~/docker/mosquitto/config:/mosquitto/config
+  #    - ~/docker/swag/etc/letsencrypt:/var/tmp
+  #    - ~/docker/mosquitto/data:/mosquitto/data
+  #    - ~/docker/mosquitto/log:/mosquitto/log
+  #grafana:
+  #  image: grafana/grafana
+  #  container_name: grafana
+  #  user: "1000"
+  #  volumes:
+  #    - ~/docker/grafana:/var/lib/grafana
+  #  ports:
+  #    - 3000:3000
+  #  depends_on:
+  #    - mariadb
+  #  environment:
+  #    GF_SERVER_PROTOCOL: http
+  #    GF_SERVER_ROOT_URL: https://${DOMINIO}:${PUERTO}/grafana/
+  #    GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+  #    GF_SERVER_DOMAIN: ${DOMINIO}
+  #    GF_ANALYTICS_REPORTING_ENABLED: "false"
+  #  restart: unless-stopped
+  #portainer:
+  #  image: portainer/portainer-ce:latest
+  #  container_name: portainer
+  #  ports:
+  #    - 9443:9443
+  #  volumes:
+  #    - /var/run/docker.sock:/var/run/docker.sock
+  #    - portainer_data:/data
+  #  restart: unless-stopped
+  #swag:
+  #  image: linuxserver/swag
+  #  container_name: swag
+  #  cap_add:
+  #    - NET_ADMIN
+  #  environment:
+  #    - PUID=1000
+  #    - PGID=1000
+  #    - TZ=America/Argentina/Buenos_Aires
+  #    - URL=${DOMINIO}
+  #    - VALIDATION=duckdns
+  #    - DUCKDNSTOKEN=${DUCKDNSTOKEN}
+  #    - SUBDOMAINS=
+  #  volumes:
+  #    - ~/docker/swag:/config
+  #  ports:
+  #    - ${PUERTO}:443
+  #    - 80:80
+  #  restart: unless-stopped
+  #telegrambot:
+  #  image: telegrambot
+  #  container_name: telegrambot
+  #  environment:
+  #    - TZ=America/Argentina/Buenos_Aires 
+  #    - TB_TOKEN=${TB_TOKEN}
+  #    - MARIADB_SERVER=${MARIADB_SERVER}
+  #    - MARIADB_USER=${MARIADB_USER}
+  #    - MARIADB_USER_PASS=${MARIADB_USER_PASS}
+  #    - MARIADB_DB=${MARIADB_DB}
+  #  restart: unless-stopped
+  #  depends_on:
+  #    - mariadb
+  #crud:
+  #  image: crud
+  #  container_name: crud
+  #  environment:
+  #    - MYSQL_USER=${CRUD_USER}
+  #    - MYSQL_PASSWORD=${CRUD_PASS}
+  #    - MYSQL_DB=${CRUD_DB}
+  #    - MYSQL_HOST=${MARIADB_SERVER}
+  #    - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
+  #  ports:
+  #    - "8000:8000"
+  #  restart: unless-stopped
+  #  depends_on:
+  #    - mariadb
   apiiot:
     image: apiiot
     build:
@@ -142,6 +142,6 @@ services:
     restart: unless-stopped
     depends_on:
       - mariadb
-volumes:
-  portainer_data:
+#volumes:
+#  portainer_data:
   

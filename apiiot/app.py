@@ -6,9 +6,14 @@ import os
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 
+from db_actions import DbAction
+
+
 logging.basicConfig(format='%(asctime)s - apiiot - %(levelname)s:%(message)s', level=logging.INFO, datefmt='%d/%m/%Y %H:%M:%S %z')
 
-app = FastAPI(root_path="/api")
+app = FastAPI()
+tabla = None
+
 url_object = URL.create(
     "mysql+aiomysql",
     username=os.environ["MARIADB_USER"],
@@ -19,24 +24,23 @@ url_object = URL.create(
 engine = create_async_engine(url_object)
 meta = MetaData()
 
-async def modelo():
-    async with engine.connect() as conn:
-        await conn.run_sync(meta.reflect, only=[os.environ["MARIADB_TABLE"]])
-        modelo = Table(os.environ["MARIADB_TABLE"], meta, autoload_with=engine)
-        return modelo
+db_action:DbAction = DbAction()
 
-tabla = asyncio.run(modelo())
+@app.on_event("startup")
+async def initialize_model() -> None:
+    global tabla
+    tabla = await db_action.instantiate_model()
+
 
 @app.get("/ultimos")
 async def ultima():
-    async_session = sessionmaker(engine, class_=AsyncSession)
-    async with async_session() as session:
+    #async_session = sessionmaker(engine, class_=AsyncSession)
+    async with db_action.async_session() as session:
         resultado = await session.execute(select(tabla).order_by(tabla.c.id.desc()))
         ultimos=resultado.first()
         columnas=[c.name for c in tabla.columns]
         ultimos_zip=zip(columnas,ultimos)
         logging.info(ultimos)
         await session.commit()
-    # await engine.dispose()
+    #await engine.dispose()
     return ultimos_zip
-    

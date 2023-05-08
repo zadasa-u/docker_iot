@@ -10,4 +10,4 @@ RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
 COPY . /app
 
-CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "-b", ":8002", "app:app"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8002"]
