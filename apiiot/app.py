@@ -17,16 +17,15 @@ logging.basicConfig(
 )
 
 app = FastAPI()
-# agent: Dispatcher = None
+app.agent = None
 
 
 @app.on_event("startup")
 async def initialize_model() -> None:
-    global agent
-    agent = await Dispatcher.factory()
+    app.agent = await Dispatcher.factory()
 
 
 @app.get("/ultimos")
 async def ultima():
-    result = await agent.get_ultimas_mediciones()
+    result = await app.agent.get_ultimas_mediciones()
     return jsonable_encoder(result)
