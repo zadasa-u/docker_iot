@@ -17,8 +17,7 @@ logging.basicConfig(
 )
 
 app = FastAPI()
-# db_actor: DbAction = DbAction()
-agent: Dispatcher = None
+# agent: Dispatcher = None
 
 
 @app.on_event("startup")

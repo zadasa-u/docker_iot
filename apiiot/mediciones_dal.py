@@ -11,7 +11,6 @@ class MedicionesDAL:
         # logging.warning("MODELOS %s", self.tabla.columns)
 
     async def traer_ultimos(self, cantidad_de_mediciones=1):
-        print("Las tablas son: ", self.tabla.columns)
         async with self.async_session() as session:
             resultado = await session.execute(
                 select(self.tabla).order_by(self.tabla.c.id.desc())
@@ -19,7 +18,7 @@ class MedicionesDAL:
             ultimos = resultado.first()
             columnas = [c.name for c in self.tabla.columns]
             ultimos_zip = zip(columnas, ultimos)
-            # logging.info(ultimos)
+            logging.debug("The last values are %s", ultimos_zip)
             await session.commit()
         return ultimos_zip
 

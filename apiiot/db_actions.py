@@ -18,10 +18,11 @@ class DbAction:
     async def instantiate_models(engine, meta):
         # este metodo tiene que mediante un for crear el
         # dict para mapear todos los modelos de las tablas
-        # self.tabla ={
+        # tabla = {
         #       'os.environ["MARIADB_TABLE"]': Table(os.environ["MARIADB_TABLE"]...)
         #   }
         async with engine.connect() as conn:
             await conn.run_sync(meta.reflect, only=[os.environ["MARIADB_TABLE"]])
             tabla = Table(os.environ["MARIADB_TABLE"], meta, autoload_with=engine)
+        logging.debug("Table models instantiated: %s", tabla)
         return tabla
