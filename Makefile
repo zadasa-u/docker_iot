@@ -1,6 +1,6 @@
 reformat:
 	isort apiiot clienteMqtt crud telegrambot && black --line-length=88 apiiot clienteMqtt crud telegrambot
-
+	autoflake --recursive --in-place --remove-unused-variables --remove-all-unused-imports ./apiiot
 black:
 	black --check --diff --line-length=88 apiiot clienteMqtt crud telegrambot
 

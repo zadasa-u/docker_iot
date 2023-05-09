@@ -1,7 +1,6 @@
 import logging
 
-from db_actions import DbAction
-from sqlalchemy import URL, MetaData, Table, select
+from sqlalchemy import select
 
 
 class MedicionesDAL:

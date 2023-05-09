@@ -1,14 +1,8 @@
-import asyncio
 import logging
-import os
 
-from db_actions import DbAction
 from dispatcher import Dispatcher
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import URL, MetaData, Table, select
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
 
 logging.basicConfig(
     format="%(asctime)s - apiiot - %(levelname)s:%(message)s",

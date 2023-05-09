@@ -1,9 +1,8 @@
-import logging
 import os
 
 from db_actions import DbAction
 from mediciones_dal import MedicionesDAL
-from sqlalchemy import URL, MetaData, Table, select
+from sqlalchemy import URL, MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 

@@ -1,10 +1,7 @@
-import asyncio
 import logging
 import os
 
-from sqlalchemy import URL, MetaData, Table, select
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Table
 
 
 class DbAction:
