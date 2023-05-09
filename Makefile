@@ -9,3 +9,9 @@ black:
 
 code-quality:
 	make reformat black
+
+up:
+	docker-compose -f docker-compose.yml up --build -d $(c)
+
+login-mariadb:
+	docker-compose -f docker-compose.yml exec mariadb bash -c "mysql -u root -proot 'sensores_remotos'"
