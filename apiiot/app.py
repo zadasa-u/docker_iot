@@ -1,37 +1,34 @@
-import asyncio, logging
-from fastapi import FastAPI
-from sqlalchemy import MetaData, select, URL, Table
-from sqlalchemy.orm import sessionmaker
+import asyncio
+import logging
 import os
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.ext.asyncio import create_async_engine
 
 from db_actions import DbAction
+from dispatcher import Dispatcher
+from fastapi import FastAPI
+from fastapi.encoders import jsonable_encoder
+from sqlalchemy import URL, MetaData, Table, select
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
 
-
-logging.basicConfig(format='%(asctime)s - apiiot - %(levelname)s:%(message)s', level=logging.INFO, datefmt='%d/%m/%Y %H:%M:%S %z')
+logging.basicConfig(
+    format="%(asctime)s - apiiot - %(levelname)s:%(message)s",
+    level=logging.INFO,
+    datefmt="%d/%m/%Y %H:%M:%S %z",
+)
 
 app = FastAPI()
-tabla = None
+db_actor: DbAction = DbAction()
+agent: Dispatcher = None
 
-db_actor:DbAction = DbAction()
-agent: Dispatcher = Dispatcher()
 
 @app.on_event("startup")
 async def initialize_model() -> None:
-    global tabla
-    tabla = await db_actor.instantiate_model()
+    global agent
+    await db_actor.instantiate_models()
+    agent = Dispatcher(db_actor)
 
 
 @app.get("/ultimos")
 async def ultima():
-    #async_session = sessionmaker(engine, class_=AsyncSession)
-    async with db_actor.async_session() as session:
-        resultado = await session.execute(select(tabla).order_by(tabla.c.id.desc()))
-        ultimos=resultado.first()
-        columnas=[c.name for c in tabla.columns]
-        ultimos_zip=zip(columnas,ultimos)
-        logging.info(ultimos)
-        await session.commit()
-    #await engine.dispose()
-    return ultimos_zip
+    result = await agent.get_ultimas_mediciones()
+    return jsonable_encoder(result)
