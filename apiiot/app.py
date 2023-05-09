@@ -17,15 +17,14 @@ logging.basicConfig(
 )
 
 app = FastAPI()
-db_actor: DbAction = DbAction()
+# db_actor: DbAction = DbAction()
 agent: Dispatcher = None
 
 
 @app.on_event("startup")
 async def initialize_model() -> None:
     global agent
-    await db_actor.instantiate_models()
-    agent = Dispatcher(db_actor)
+    agent = await Dispatcher.factory()
 
 
 @app.get("/ultimos")

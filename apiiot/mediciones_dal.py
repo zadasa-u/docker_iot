@@ -1,18 +1,23 @@
+import logging
+
 from db_actions import DbAction
 from sqlalchemy import URL, MetaData, Table, select
 
 
 class MedicionesDAL:
-    def __init__(self, db_actor: DbAction) -> None:
-        self._db_actor = db_actor
+    def __init__(self, async_session, tabla) -> None:
+        self.async_session = async_session
+        self.tabla = tabla
+        # logging.warning("MODELOS %s", self.tabla.columns)
 
     async def traer_ultimos(self, cantidad_de_mediciones=1):
-        async with self._db_actor.async_session() as session:
+        print("Las tablas son: ", self.tabla.columns)
+        async with self.async_session() as session:
             resultado = await session.execute(
-                select(self._db_actor.tabla).order_by(self._db_actor.tabla.c.id.desc())
+                select(self.tabla).order_by(self.tabla.c.id.desc())
             )
             ultimos = resultado.first()
-            columnas = [c.name for c in self._db_actor.tabla.columns]
+            columnas = [c.name for c in self.tabla.columns]
             ultimos_zip = zip(columnas, ultimos)
             # logging.info(ultimos)
             await session.commit()
