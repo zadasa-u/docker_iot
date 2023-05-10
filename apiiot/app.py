@@ -1,14 +1,18 @@
 import logging
 
+from config import Config
 from dispatcher import Dispatcher
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 
 logging.basicConfig(
-    format="%(asctime)s - apiiot - %(levelname)s:%(message)s",
-    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s:%(message)s",
+    level=Config.LOG_LEVEL,
     datefmt="%d/%m/%Y %H:%M:%S %z",
 )
+
+
+logger = logging.getLogger("app")
 
 app = FastAPI()
 app.agent = None
@@ -16,7 +20,8 @@ app.agent = None
 
 @app.on_event("startup")
 async def initialize_model() -> None:
-    app.agent = await Dispatcher.factory()
+    app.agent = await Dispatcher.factory(Config)
+    logger.debug("Dispatcher initiated.")
 
 
 @app.get("/ultimos")
