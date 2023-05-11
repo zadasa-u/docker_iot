@@ -31,10 +31,10 @@ class Dispatcher(DbAction):
         )
         url_object = URL.create(
             "mysql+aiomysql",
-            username=Config.MARIADB_USER,
-            password=Config.MARIADB_USER_PASS,
-            host=Config.MARIADB_SERVER,
-            database=Config.MARIADB_DB,
+            username=config.MARIADB_USER,
+            password=config.MARIADB_USER_PASS,
+            host=config.MARIADB_SERVER,
+            database=config.MARIADB_DB,
         )
         engine = create_async_engine(url_object)
         meta = MetaData()
