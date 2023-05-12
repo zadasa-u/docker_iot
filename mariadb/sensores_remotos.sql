@@ -34,3 +34,9 @@ COMMIT;
 
 CREATE USER 'mediciones'@'%' IDENTIFIED BY 'passworddeiot';GRANT USAGE ON *.* TO 'mediciones'@'%' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
 GRANT SELECT, INSERT ON `sensores\_remotos`.* TO 'mediciones'@'%';
+
+--
+-- Insert initial data
+--
+USE sensores_remotos;
+INSERT INTO mediciones (id, sensor_id, timestamp, temperatura, humedad) VALUES (1, '4cebd671ea50', '2023-03-02 19:34:11', 26.4, 68.3);

@@ -15,7 +15,7 @@ logging.basicConfig(
 logger = logging.getLogger("app")
 
 app = FastAPI()
-app.agent = None
+app.agent: Dispatcher | None = None
 
 
 @app.on_event("startup")

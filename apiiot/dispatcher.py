@@ -11,14 +11,14 @@ logger = logging.getLogger("app." + __name__)
 
 
 class Dispatcher(DbAction):
-    def __init__(self, engine, meta, async_session, tabla) -> None:
-        super().__init__(engine, meta, async_session, tabla)
+    def __init__(self, engine, meta, async_session, tablas) -> None:
+        super().__init__(engine, meta, async_session, tablas)
 
         self.mediciones_dal = MedicionesDAL(
-            self.async_session, self.tabla["mediciones"]
+            self.async_session, self.tablas["mediciones"]
         )
-        # self.nodos_dal = NodosDal(self.async_session, self.tabla['nodos'])
-        # self.otro_dal = OtroDal(self.async_session, self.tabla['otra'])
+        # self.nodos_dal = NodosDal(self.async_session, self.tablas['nodos'])
+        # self.otro_dal = OtroDal(self.async_session, self.tablas['otra'])
 
     async def get_ultimas_mediciones(self, cantidad=1):
         ultima_medicion = await self.mediciones_dal.traer_ultimos(cantidad)
@@ -39,8 +39,8 @@ class Dispatcher(DbAction):
         engine = create_async_engine(url_object)
         meta = MetaData()
         async_session = sessionmaker(engine, class_=AsyncSession)
-        tabla = await super().instantiate_models(engine, meta)
-        return cls(engine, meta, async_session, tabla)
+        tablas = await super().instantiate_models(engine, meta)
+        return cls(engine, meta, async_session, tablas)
 
     # en el caso de que haya que hacer alguna union yo las haria
     # aca dentro del Dispatcher

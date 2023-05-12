@@ -7,18 +7,18 @@ logger = logging.getLogger("app.dispatcher." + __name__)
 
 
 class DbAction:
-    def __init__(self, engine, meta, async_session, tabla) -> None:
+    def __init__(self, engine, meta, async_session, tablas) -> None:
         self.engine = engine
         self.meta = meta
         self.async_session = async_session
-        self.tabla = tabla  # esto va a ser un dict en el futuro
+        self.tablas = tablas
 
     @staticmethod
     async def instantiate_models(engine, meta):
         # mediante un for crea el dict para mapear todos
         # los modelos de todas las tablas
         # tabla = {
-        #       'os.environ["MARIADB_TABLE"]': Table(os.environ["MARIADB_TABLE"]...)
+        #       'mediciones': Table(...)
         #   }
 
         # async with engine.connect() as conn:
