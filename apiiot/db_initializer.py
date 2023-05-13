@@ -6,7 +6,7 @@ from sqlalchemy import Table
 logger = logging.getLogger("app.dispatcher." + __name__)
 
 
-class DbAction:
+class DbInitializer:
     def __init__(self, engine, meta, async_session, tablas) -> None:
         self.engine = engine
         self.meta = meta

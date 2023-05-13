@@ -1,7 +1,7 @@
 import logging
 
 from config import Config
-from db_actions import DbAction
+from db_initializer import DbInitializer
 from mediciones_dal import MedicionesDAL
 from sqlalchemy import URL, MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 logger = logging.getLogger("app." + __name__)
 
 
-class Dispatcher(DbAction):
+class Dispatcher(DbInitializer):
     def __init__(self, engine, meta, async_session, tablas) -> None:
         super().__init__(engine, meta, async_session, tablas)
 
