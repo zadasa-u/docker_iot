@@ -11,7 +11,7 @@ class Config:
     MARIADB_SERVER = env.str("MARIADB_SERVER")
     PUERTO = env.int("PUERTO")
     LOG_LEVEL = env.str("LOG_LEVEL").upper()
-    MARIADB_DB_TABLES_LIST = env.list("TABLES_LIST")
+    MARIADB_DB_TABLES_LIST = env.list("MARIADB_DB_TABLES_LIST")
 
 
 env.seal()

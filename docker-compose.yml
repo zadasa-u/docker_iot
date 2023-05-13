@@ -140,7 +140,7 @@ services:
       - MARIADB_DB=${MARIADB_DB}
       - PUERTO=${PUERTO}
       - LOG_LEVEL=${LOG_LEVEL}
-      - TABLES_LIST=${TABLES_LIST}
+      - MARIADB_DB_TABLES_LIST=${MARIADB_DB_TABLES_LIST}
     ports:
       - "8002:8002"
     restart: unless-stopped
