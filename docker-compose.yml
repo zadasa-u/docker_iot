@@ -1,0 +1,13 @@
+version: "3"
+services:
+  clientemqtt:
+    build: ./clienteMqtt/
+    image: icmqtt
+    container_name: ccmqtt
+    environment:
+      - TP=${TP}
+      - SERVIDOR=${SERVIDOR}
+      - TOPICO1=${TOPICO1}
+      - TOPICO2=${TOPICO2}
+      - PUBLICAR=${PUBLICAR}
+    restart: unless-stopped
