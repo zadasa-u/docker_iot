@@ -5,17 +5,14 @@ from environs import Env
 env = Env()
 env.read_env() #lee el archivo con las variables. por defecto .env
 
-TP = int(env("TP"))
-
-logging.basicConfig(format='%(asctime)s - cliente mqtt - %(taskName)s => %(levelname)s: %(message)s', level=logging.INFO, datefmt='%d/%m/%Y %H:%M:%S')
-
-cuenta = 0
+logging.basicConfig(format='%(asctime)s - cliente mqtt - [%(taskName)s] => %(levelname)s: %(message)s', level=logging.INFO, datefmt='%d/%m/%Y %H:%M:%S')
 
 async def counter():
-    global cuenta
+    cuenta = 0
     while True:
         cuenta += 1
         logging.info('Valor cuenta: ' + str(cuenta))
+        cola_conteo.put_nowait(cuenta)
         await asyncio.sleep(3)
 
 async def topic1_consumer():
@@ -36,10 +33,13 @@ async def distributor(client):
             topic2_queue.put_nowait(message)
 
 async def publish(client):
-    global cuenta
+
+    TP = int(env("TP"))
+    
     while True:
+        cuenta = await cola_conteo.get()
         await client.publish(env("PUBLICAR"), str(cuenta))
-        logging.info('topico: ' + env("PUBLICAR") + ' - contenido: ' + str(cuenta))
+        logging.info('topico: ' + env("PUBLICAR") + ' - pyload: ' + str(cuenta))
 
         await asyncio.sleep(TP)
 
@@ -58,7 +58,7 @@ async def main():
         await client.subscribe(env("TOPICO2"))
         
         async with asyncio.TaskGroup() as tg:
-            tg.create_task(distributor(client), name='distribucion')
+            tg.create_task(distributor(client), name='atender mensajes')
             tg.create_task(topic1_consumer(), name='consumir topico 1')
             tg.create_task(topic2_consumer(), name='consumir topico 2')
             tg.create_task(publish(client), name='publicacion')
@@ -68,6 +68,7 @@ if __name__ == "__main__":
 
     topic1_queue = asyncio.Queue()
     topic2_queue = asyncio.Queue()
+    cola_conteo = asyncio.Queue()
     
     try:
         asyncio.run(main())
