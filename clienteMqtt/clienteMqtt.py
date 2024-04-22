@@ -1,4 +1,4 @@
-import asyncio, ssl, certifi, logging
+import asyncio, ssl, certifi, logging, sys
 import aiomqtt
 from environs import Env
 
@@ -45,4 +45,7 @@ async def main():
         await asyncio.gather(receive(client),publish(client), task())
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        sys.exit(0)
