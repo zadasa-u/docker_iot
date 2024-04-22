@@ -1,9 +1,8 @@
-version: "3"
 services:
   clientemqtt:
     build: ./clienteMqtt/
-    image: icmqtt
-    container_name: ccmqtt
+    image: cliente_mqtt
+    container_name: clientemqtt
     environment:
       - TP=${TP}
       - SERVIDOR=${SERVIDOR}
