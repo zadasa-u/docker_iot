@@ -1,9 +1,5 @@
-import asyncio, ssl, certifi, logging, sys
+import asyncio, ssl, certifi, logging, sys, os
 import aiomqtt
-from environs import Env
-
-env = Env()
-env.read_env() #lee el archivo con las variables. por defecto .env
 
 logging.basicConfig(format='%(asctime)s - cliente mqtt - [%(taskName)s] => %(levelname)s: %(message)s', level=logging.INFO, datefmt='%d/%m/%Y %H:%M:%S')
 
@@ -27,19 +23,19 @@ async def topic2_consumer():
 
 async def distributor(client):
     async for message in client.messages:
-        if message.topic.matches(env('TOPICO1')):
+        if message.topic.matches(os.environ['TOPICO1']):
             topic1_queue.put_nowait(message)
-        elif message.topic.matches(env('TOPICO2')):
+        elif message.topic.matches(os.environ['TOPICO2']):
             topic2_queue.put_nowait(message)
 
 async def publish(client):
 
-    TP = int(env("TP"))
+    TP = int(os.environ["TP"])
     
     while True:
         cuenta = await cola_conteo.get()
-        await client.publish(env("PUBLICAR"), str(cuenta))
-        logging.info('topico: ' + env("PUBLICAR") + ' - pyload: ' + str(cuenta))
+        await client.publish(os.environ["PUBLICAR"], str(cuenta))
+        logging.info('topico: ' + os.environ["PUBLICAR"] + ' - pyload: ' + str(cuenta))
 
         await asyncio.sleep(TP)
 
@@ -50,12 +46,12 @@ async def main():
     tls_context.load_default_certs()
 
     async with aiomqtt.Client(
-        env("SERVIDOR"),
+        os.environ["SERVIDOR"],
         port=8883,
         tls_context=tls_context,
     ) as client:
-        await client.subscribe(env("TOPICO1"))
-        await client.subscribe(env("TOPICO2"))
+        await client.subscribe(os.environ['TOPICO1'])
+        await client.subscribe(os.environ['TOPICO2'])
         
         async with asyncio.TaskGroup() as tg:
             tg.create_task(distributor(client), name='atender mensajes')
