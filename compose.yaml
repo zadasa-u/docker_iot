@@ -1,4 +1,3 @@
-version: "3"
 services:
   mariadb:
     image: mariadb
@@ -6,10 +5,10 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
       - TZ=America/Argentina/Buenos_Aires
     volumes:
-      - ~/docker/mariadb:/config
+      - ./mariadb:/var/lib/mysql:Z
     ports:
       - 3306:3306
     restart: unless-stopped
@@ -46,14 +45,14 @@ services:
       - 8883:8883
     restart: unless-stopped
     volumes:
-      - ~/docker/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
-      - ~/docker/mosquitto/config:/mosquitto/config
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/config:/mosquitto/config
   grafana:
     image: grafana/grafana
     container_name: grafana
     user: "1000"
     volumes:
-      - ~/docker/grafana:/var/lib/grafana
+      - ./grafana:/var/lib/grafana
     ports:
       - 3000:3000
     depends_on:
