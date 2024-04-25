@@ -138,3 +138,4 @@ swag/config/*
 !swag/config/nginx/site-confs/default.conf
 
 grafana/
+mariadb/
