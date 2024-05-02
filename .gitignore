@@ -140,3 +140,4 @@ swag/config/*
 mariadb/
 mosquitto/
 grafana/
+swag/
