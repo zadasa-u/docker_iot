@@ -12,6 +12,7 @@ async def main():
         await client.subscribe(os.environ['TOPICO'])
         async for message in client.messages:
             logging.info(str(message.topic) + ": " + message.payload.decode("utf-8"))
+            dispositivo=str(message.topic).split('/')[-1]
             datos=json.loads(message.payload.decode('utf8'))
             sql = "INSERT INTO `mediciones` (`sensor_id`, `temperatura`, `humedad`) VALUES (%s, %s, %s)"
             try:
@@ -26,7 +27,7 @@ async def main():
 
             async with conn.cursor() as cur:
                 try:
-                    await cur.execute(sql, (message.topic, datos['temperatura'], datos['humedad']))
+                    await cur.execute(sql, (dispositivo, datos['temperatura'], datos['humedad']))
                     await conn.commit()
                     await cur.close()
                     await conn.ensure_closed()
