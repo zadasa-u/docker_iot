@@ -135,7 +135,7 @@ dmypy.json
 
 #swag related files: ignore all except NGINX conf
 swag/
+
 grafana/
 mosquitto/
-wireguard/
 mariadb/
