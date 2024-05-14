@@ -49,7 +49,7 @@ services:
       - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
       - ./mosquitto/config:/mosquitto/config
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana-oss
     container_name: grafana
     user: "1000"
     volumes:
@@ -62,7 +62,7 @@ services:
       GF_ANALYTICS_REPORTING_ENABLED: "false"
     restart: unless-stopped
   portainer:
-    image: portainer/portainer-ce:latest
+    image: portainer/portainer-ce:2.20.2
     container_name: portainer
     ports:
       - 9443:9443
