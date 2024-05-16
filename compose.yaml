@@ -36,6 +36,7 @@ services:
       - MARIADB_DB=${MARIADB_DB}
       - MQTT_USR=${MQTT_USR}
       - MQTT_PASS=${MQTT_PASS}
+      - PUERTO_MQTTS=${PUERTO_MQTTS}
     restart: unless-stopped
     depends_on:
       - mariadb
@@ -45,7 +46,7 @@ services:
     user: "1000:1000"
     ports:
       - 1883:1883
-      - 8883:8883
+      - ${PUERTO_MQTTS}:8883
     restart: unless-stopped
     volumes:
       - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
