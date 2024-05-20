@@ -1,4 +1,3 @@
-version: "3"
 services:
   mariadb:
     image: mariadb
@@ -6,10 +5,10 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
       - TZ=America/Argentina/Buenos_Aires
     volumes:
-      - ~/docker/mariadb:/config
+      - ./mariadb:/config
     ports:
       - 3306:3306
     restart: unless-stopped
@@ -37,6 +36,7 @@ services:
       - MARIADB_DB=${MARIADB_DB}
       - MQTT_USR=${MQTT_USR}
       - MQTT_PASS=${MQTT_PASS}
+      - PUERTO_MQTTS=${PUERTO_MQTTS}
     restart: unless-stopped
     depends_on:
       - mariadb
@@ -46,20 +46,20 @@ services:
     user: "1000:1000"
     ports:
       - 1883:1883
-      - 8883:8883
+      - ${PUERTO_MQTTS}:8883
     restart: unless-stopped
     volumes:
-      - ~/docker/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
-      - ~/docker/mosquitto/config:/mosquitto/config
-      - ~/docker/swag/etc/letsencrypt:/var/tmp
-      - ~/docker/mosquitto/data:/mosquitto/data
-      - ~/docker/mosquitto/log:/mosquitto/log
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/config:/mosquitto/config
+      - ./swag/etc/letsencrypt:/var/tmp
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana-oss
     container_name: grafana
     user: "1000"
     volumes:
-      - ~/docker/grafana:/var/lib/grafana
+      - ./grafana:/var/lib/grafana
     ports:
       - 3000:3000
     depends_on:
@@ -72,7 +72,7 @@ services:
       GF_ANALYTICS_REPORTING_ENABLED: "false"
     restart: unless-stopped
   portainer:
-    image: portainer/portainer-ce:latest
+    image: portainer/portainer-ce:2.20.2
     container_name: portainer
     ports:
       - 9443:9443
@@ -94,10 +94,16 @@ services:
       - DNSPLUGIN=duckdns
       - SUBDOMAINS=
     volumes:
-      - ~/docker/swag:/config
+      - ./swag:/config
     ports:
       - ${PUERTO}:443/tcp
       - 80:80
     restart: unless-stopped
+  telegrambot:
+    image: telegrambot
+    container_name: telegrambot
+    environment:
+      - TZ=America/Argentina/Buenos_Aires 
+      - TB_TOKEN=${TB_TOKEN}
 volumes:
   portainer_data:

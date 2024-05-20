@@ -20,7 +20,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # await update.message.reply_text("Bienvenido al Bot "+ nombre + " " + apellido) # también funciona
 
 async def acercade(update: Update, context):
-    await context.bot.send_message(update.message.chat.id, text="Este bot fue creado para el curso de IoT (2023)")
+    await context.bot.send_message(update.message.chat.id, text="Este bot fue creado para el curso de IoT FIO")
 
 def main():
     application = Application.builder().token(token).build()
