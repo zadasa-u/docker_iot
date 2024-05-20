@@ -22,10 +22,20 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def acercade(update: Update, context):
     await context.bot.send_message(update.message.chat.id, text="Este bot fue creado para el curso de IoT FIO")
 
+async def kill(update: Update, context):
+    logging.info(context.args)
+    if context.args and context.args[0] == '@e':
+        await context.bot.send_animation(update.message.chat.id, "CgACAgEAAxkBAANXZAiWvDIEfGNVzodgTgH1o5z3_WEAAmUCAALrx0lEZ8ytatzE5X0uBA")
+        await asyncio.sleep(6)
+        await context.bot.send_message(update.message.chat.id, text="¡¡¡Ahora estan todos muertos!!!")
+    else:
+        await context.bot.send_message(update.message.chat.id, text="☠️ ¡¡¡Esto es muy peligroso!!! ☠️")
+        
 def main():
     application = Application.builder().token(token).build()
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('acercade', acercade))
+    application.add_handler(CommandHandler('kill', kill))
     application.run_polling()
 
 if __name__ == '__main__':
