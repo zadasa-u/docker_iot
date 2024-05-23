@@ -25,7 +25,7 @@ async def acercade(update: Update, context):
 async def kill(update: Update, context):
     logging.info(context.args)
     if context.args and context.args[0] == '@e':
-        await context.bot.send_animation(update.message.chat.id, "CgACAgEAAxkBAAOPZkuctzsWZVlDSNoP9PavSZmH5poAAmUCAALrx0lEVKaX7K-68Ns1BA")
+        await context.bot.send_animation(update.message.chat.id, "CgACAgQAAxkBAAMXZk-RZrTHaREq6KCoCKjx1MX71-gAAgEDAAJHASxTqeQNwqo_Sxs1BA")
         await asyncio.sleep(6)
         await context.bot.send_message(update.message.chat.id, text="¡¡¡Ahora estan todos muertos!!!")
     else:
