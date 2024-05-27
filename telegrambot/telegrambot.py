@@ -23,16 +23,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def acercade(update: Update, context):
     await context.bot.send_message(update.message.chat.id, text="Este bot fue creado para el curso de IoT FIO")
-
-async def kill(update: Update, context):
-    logging.info(context.args)
-    if context.args and context.args[0] == '@e':
-        await context.bot.send_animation(update.message.chat.id, "CgACAgEAAxkBAAOPZkuctzsWZVlDSNoP9PavSZmH5poAAmUCAALrx0lEVKaX7K-68Ns1BA")
-        await asyncio.sleep(6)
-        await context.bot.send_message(update.message.chat.id, text="¡¡¡Ahora estan todos muertos!!!")
-    else:
-        await context.bot.send_message(update.message.chat.id, text="☠️ ¡¡¡Esto es muy peligroso!!! ☠️")
-        
+    
 async def medicion(update: Update, context):
     logging.info(update.message.text)
     sql = f"SELECT timestamp, {update.message.text} FROM mediciones ORDER BY timestamp DESC LIMIT 1"
@@ -79,11 +70,72 @@ async def graficos(update: Update, context):
         await context.bot.send_photo(chat_id=update.effective_chat.id, photo=buffer)
     conn.close()
 
+async def publicar_comando(update: Update, context):
+    logging.info(update.message.text)
+
+    tls_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    tls_context.verify_mode = ssl.CERT_REQUIRED
+    tls_context.check_hostname = True
+    tls_context.load_default_certs()
+
+    topico, valor = update.message.text.split()
+    topico = topico[1:].lower() # eliminando barra /
+    valor = valor[1:].lower() # eliminando arroba @
+
+    valido = False
+
+    if topico == 'setpoint':
+        try:
+            if int(valor) > 0 and int(valor) < 50:
+                valido = True
+        except:
+            logging.info('Argumento no valido: "{}" no es un entero'.format(valor))
+
+    elif topico == 'periodo':
+        try:
+            if int(valor) > 10:
+                valido = True
+        except:
+            logging.info('Argumento no valido: "{}" no es un entero'.format(valor))
+
+    elif topico == 'modo':
+        if valor in ('auto','man'):
+            valido = True
+
+    elif topico == 'destello':
+        if valor == 'on':
+            valido = True
+
+    elif topico == 'rele':
+        if valor in ('on','off'):
+            valido = True
+
+    try:
+        async with Client(
+            os.environ["DOMINIO"],
+            username=os.environ["MQTT_USR"],
+            password=os.environ["MQTT_PASS"],
+            port = int(os.environ['PUERTO_MQTTS']),
+            tls_context=tls_context,
+        ) as client:
+
+            if valido:
+                await client.publish(topic=topico, payload=valor, qos=1)
+
+    except OSError as e:
+        logging.info(e)
+
 def main():
     application = Application.builder().token(token).build()
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('acercade', acercade))
-    application.add_handler(CommandHandler('kill', kill))
+
+    application.add_handler(CommandHandler('setpoint', publicar_comando))
+    application.add_handler(CommandHandler('periodo', publicar_comando))
+    application.add_handler(CommandHandler('modo', publicar_comando))
+    application.add_handler(CommandHandler('rele', publicar_comando))
+    application.add_handler(CommandHandler('destello', publicar_comando))
+    
     application.add_handler(MessageHandler(filters.Regex("^(temperatura|humedad)$"), medicion))
     application.add_handler(MessageHandler(filters.Regex("^(gráfico temperatura|gráfico humedad)$"), graficos))
     application.run_polling()
