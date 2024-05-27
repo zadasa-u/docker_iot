@@ -1,8 +1,9 @@
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
-import logging, os, asyncio, aiomysql, traceback, locale
+import logging, os, asyncio, aiomysql, traceback, locale, ssl
 import matplotlib.pyplot as plt
 from io import BytesIO
+from aiomqtt import Client
 
 token=os.environ["TB_TOKEN"]
 
@@ -80,7 +81,6 @@ async def publicar_comando(update: Update, context):
 
     topico, valor = update.message.text.split()
     topico = topico[1:].lower() # eliminando barra /
-    valor = valor[1:].lower() # eliminando arroba @
 
     valido = False
 
@@ -112,7 +112,7 @@ async def publicar_comando(update: Update, context):
 
     try:
         async with Client(
-            os.environ["DOMINIO"],
+            os.environ["SERVIDOR"],
             username=os.environ["MQTT_USR"],
             password=os.environ["MQTT_PASS"],
             port = int(os.environ['PUERTO_MQTTS']),
@@ -120,6 +120,7 @@ async def publicar_comando(update: Update, context):
         ) as client:
 
             if valido:
+                logging.info("Publicando en {} el valor: {}".format(topico,valor))
                 await client.publish(topic=topico, payload=valor, qos=1)
 
     except OSError as e:
