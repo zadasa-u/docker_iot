@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<form action="{{url_for('add_contact')}}" method="POST">
+  <input type="text" name="nombre" placeholder="Nombre completo">
+  <input type="email" name="email" placeholder="Email">
+  <input type="tel" name="tel" placeholder="teléfono">
+  <button>guardar</button>
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <td>ID</td>
+      <td>Nombre completo</td>
+      <td>Email</td>
+      <td>teléfono</td>
+      <td>acción</td>
+    </tr>
+  </thead>
+  <tbody>
+    {% for contacto in contactos %}
+    <tr>
+      <td>{{contacto.0}}</td>
+      <td>{{contacto.1}}</td>
+      <td>{{contacto.2}}</td>
+      <td>{{contacto.3}}</td>
+      <td>
+        <a href="/edit/{{contacto.0}}">editar</a>
+        <a href="/delete/{{contacto.0}}">borrar</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
