@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>FLASK CRUD 1.3</title>
+    <title>FLASK CRUD 1.5</title>
     {% with messages = get_flashed_messages() %} {% if messages %}
     <ul>
       {% for message in messages %}
@@ -10,6 +10,10 @@
       {% endfor %}
     </ul>
     {% endif %} {% endwith %}
+    {% if g.usuario %}
+      <div style="float: right;">{{ g.usuario }} <a href="{{url_for('logout')}}">Salir</a> </div>
+    {% endif %}
+
   </head>
   <body>
     {% block body %} {% endblock %}
