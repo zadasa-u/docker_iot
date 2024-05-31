@@ -1,36 +1,56 @@
 {% extends "layout.html" %}
 {% block body %}
-
-<form action="{{url_for('add_contact')}}" method="POST">
-  <input type="text" name="nombre" placeholder="Nombre completo">
-  <input type="email" name="email" placeholder="Email">
-  <input type="tel" name="tel" placeholder="teléfono">
-  <button>guardar</button>
-</form>
-
-<table>
-  <thead>
-    <tr>
-      <td>ID</td>
-      <td>Nombre completo</td>
-      <td>Email</td>
-      <td>teléfono</td>
-      <td>acción</td>
-    </tr>
-  </thead>
-  <tbody>
-    {% for contacto in contactos %}
-    <tr>
-      <td>{{contacto.0}}</td>
-      <td>{{contacto.1}}</td>
-      <td>{{contacto.2}}</td>
-      <td>{{contacto.3}}</td>
-      <td>
-        <a href="{{url_for('conseguir_contacto',id=contacto.0)}}">editar</a>
-        <a href="{{url_for('borrar_contacto',id=contacto.0)}}">borrar</a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="row">
+  <div class="col-md-7 mx-auto">
+    <div class="card card-body">
+      <form action="{{url_for('add_contact')}}" method="POST">
+        <legend>Cargar contacto</legend>
+        <div class="form-group">
+          <label class="col-form-label mt-4" for="inputDefault">Nombre completo</label>
+          <input type="text" class="form-control" id="inputDefault" data-ddg-inputtype="unknown" name="nombre">
+        </div>
+        <div class="form-group">
+          <label class="col-form-label mt-4" for="tel">Teléfono</label>
+          <input type="tel" class="form-control" id="tel" data-ddg-inputtype="unknown" name="tel">
+        </div>
+        <div class="form-group">
+          <label for="email" class="form-label mt-4">Email</label>
+          <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp"
+            data-ddg-inputtype="identities.emailAddress" data-ddg-autofill="true">
+          <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <button type="submit" class="btn btn-primary mt-4">guardar</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="row pt-5 ">
+  <div class="col-md-7 mx-auto">
+    <table class="table table-hover table-default">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Nombre completo</th>
+          <th scope="col">teléfono</th>
+          <th scope="col">Email</th>
+          <th scope="col">acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for contacto in contactos %}
+        <tr>
+          <td>{{contacto.0}}</td>
+          <td>{{contacto.1}}</td>
+          <td>{{contacto.2}}</td>
+          <td>{{contacto.3}}</td>
+          <td>
+            <a href="{{url_for('conseguir_contacto',id=contacto.0)}}" class="btn btn-secondary">editar</a>
+            <a href="{{url_for('borrar_contacto',id=contacto.0)}}" class="btn btn-danger btn-borrar">borrar</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}
