@@ -45,9 +45,10 @@ def registrar():
         elif not request.form.get("password"):
             return "el campo contraseña es oblicatorio"
 
-        passhash=generate_password_hash(request.form.get("password"), method='pbkdf2:sha256:10000', salt_length=16)
+        passhash=generate_password_hash(request.form.get("password"), method='scrypt', salt_length=16)
+        logging.info(passhash)
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO usuarios (usuario, hash) VALUES (%s,%s)", (request.form.get("usuario"), passhash[20:]))
+        cur.execute("INSERT INTO usuarios (usuario, hash) VALUES (%s,%s)", (request.form.get("usuario"), passhash[17:]))
         if mysql.connection.affected_rows():
             flash('Se agregó un usuario')  # usa sesión
             logging.info("se agregó un usuario")
@@ -70,7 +71,7 @@ def login():
         cur.execute("SELECT * FROM usuarios WHERE usuario LIKE %s", (request.form.get("usuario"),))
         rows=cur.fetchone()
         if(rows):
-            if (check_password_hash('pbkdf2:sha256:10000$' + rows[2],request.form.get("password"))):
+            if (check_password_hash('scrypt:32768:8:1$' + rows[2],request.form.get("password"))):
                 session.permanent = True
                 session["user_id"]=request.form.get("usuario")
                 logging.info("se autenticó correctamente")
