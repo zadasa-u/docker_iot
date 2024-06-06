@@ -155,7 +155,11 @@ def logout():
 @app.route("/cambiar_tema", methods=['POST'])
 @require_login
 def cambiar_tema():
-    session["tema"] = request.form.get("tema")
+    """Alterna entre tema oscuro y claro"""
+    if session["tema"] == "claro":
+        session["tema"] == "oscuro"
+    else:
+        session["tema"] == "claro"
     
     logging.info(f'Tema seleccionado: {session["tema"]}')
 

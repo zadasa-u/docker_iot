@@ -28,22 +28,7 @@
       <!--#####################################################################-->
       {% if session.get("user_id") %}
       <form id='temaForm' action="{{url_for('cambiar_tema')}}" method="POST">
-        <label for="tema">Tema de interfaz:</label>
-        <select name="tema" id="tema" onchange="enviarFormulario()">
-          {% if session["tema"] == "oscuro" %}
-          <option value="oscuro">oscuro</option>
-          <option value="claro">claro</option>
-          {% elif session["tema"] == "claro" %}
-          <option value="claro">claro</option>
-          <option value="oscuro">oscuro</option>
-          {% endif %}
-        </select>
-        <!-- <input type="submit" value="Aplicar"> -->
-        <script>
-          function enviarFormulario() {
-            document.getElementById('temaForm').submit();
-          }
-        </script>
+        <button type="submit">Cambiar tema</button>
       </form>
       {% endif %}
       <!--#####################################################################-->
