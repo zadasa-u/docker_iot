@@ -68,15 +68,21 @@ def login():
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM usuarios WHERE usuario LIKE %s", (request.form.get("usuario"),))
         rows=cur.fetchone()
+
         if(rows):
             if (check_password_hash('scrypt:32768:8:1$' + rows[2],request.form.get("password"))):
+                
                 session.permanent = True
+                
                 session["user_id"]=request.form.get("usuario")
+                session["tema"] = "claro"
+
                 logging.info("se autenticó correctamente")
                 return redirect(url_for('index'))
             else:
                 flash('usuario o contraseña incorrecto')
                 return redirect(url_for('login'))
+    
     return render_template('login.html')
 
 @app.route('/')
@@ -144,4 +150,13 @@ def actualizar_contacto(id):
 def logout():
     session.clear()
     logging.info("el usuario {} cerró su sesión".format(session.get("user_id")))
+    return redirect(url_for('index'))
+
+@app.route("/cambiar_tema", methods=['POST'])
+@require_login
+def cambiar_tema():
+    session["tema"] = request.form.get("tema")
+    
+    logging.info(f'Tema seleccionado: {session["tema"]}')
+
     return redirect(url_for('index'))

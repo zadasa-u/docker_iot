@@ -4,8 +4,15 @@
 <head>
   <meta charset="UTF-8" />
   <title>FLASK CRUD 1.6</title>
-  <!-- <link rel="stylesheet" href="https://bootswatch.com/5/cosmo/bootstrap.min.css"> -->
-  <link rel="stylesheet" href="https://bootswatch.com/5/darkly/bootstrap.min.css">
+  
+  <!--##########################################################-->
+  {% if session.get("tema") == "oscuro" %}
+    <link rel="stylesheet" href="https://bootswatch.com/5/darkly/bootstrap.min.css">
+  {% else %}
+    <link rel="stylesheet" href="https://bootswatch.com/5/cosmo/bootstrap.min.css">
+  {% endif %}
+  <!--##########################################################-->
+
   {% with messages = get_flashed_messages() %} {% if messages %}
   {% for message in messages %}
   <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -17,6 +24,30 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">CRUD</a>
+
+      <!--#####################################################################-->
+      {% if session.get("user_id") %}
+      <form id='temaForm' action="{{url_for('cambiar_tema')}}" method="POST">
+        <label for="tema">Tema de interfaz:</label>
+        <select name="tema" id="tema" onchange="enviarFormulario()">
+          {% if session["tema"] == "oscuro" %}
+          <option value="oscuro">oscuro</option>
+          <option value="claro">claro</option>
+          {% elif session["tema"] == "claro" %}
+          <option value="claro">claro</option>
+          <option value="oscuro">oscuro</option>
+          {% endif %}
+        </select>
+        <!-- <input type="submit" value="Aplicar"> -->
+        <script>
+          function enviarFormulario() {
+            document.getElementById('temaForm').submit();
+          }
+        </script>
+      </form>
+      {% endif %}
+      <!--#####################################################################-->
+
       {% if session.get("user_id") %}
       <div class="d-flex">
         <div class="nav-item pe-3 pt-2">{{ session.get("user_id") }}</div>
