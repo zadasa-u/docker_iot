@@ -121,7 +121,7 @@ def borrar_contacto(id):
 @require_login
 def conseguir_contacto(id):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM contactos WHERE id = %s', (id))
+    cur.execute('SELECT * FROM contactos WHERE id = %s', (id,))
     datos = cur.fetchone()
     logging.info(datos)
     return render_template('editar-contacto.html', contacto = datos)
