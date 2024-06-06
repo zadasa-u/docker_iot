@@ -28,7 +28,7 @@
       <!--#####################################################################-->
       {% if session.get("user_id") %}
       <form id='temaForm' action="{{url_for('cambiar_tema')}}" method="POST">
-        <button type="submit">Cambiar tema</button>
+        <button class="btn btn-dark" type="submit">Cambiar tema</button>
       </form>
       {% endif %}
       <!--#####################################################################-->
