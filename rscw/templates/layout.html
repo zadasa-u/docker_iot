@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>FLASK RSCW 1.0</title>
+  
+  <!--##########################################################-->
+  {% if session.get("tema") == "oscuro" %}
+    <link rel="stylesheet" href="https://bootswatch.com/5/darkly/bootstrap.min.css">
+  {% else %}
+    <link rel="stylesheet" href="https://bootswatch.com/5/cosmo/bootstrap.min.css">
+  {% endif %}
+  <!--##########################################################-->
+
+  {% with messages = get_flashed_messages() %} {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>{{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %} {% endwith %}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">RSCW</a>
+
+      <!--#####################################################################-->
+      {% if session.get("user_id") %}
+      <form id='temaForm' action="{{url_for('change_theme')}}" method="POST">
+        <button class="btn btn-dark" type="submit">Cambiar tema</button>
+      </form>
+      {% endif %}
+      <!--#####################################################################-->
+
+      {% if session.get("user_id") %}
+      <div class="d-flex">
+        <div class="nav-item pe-3 pt-2">{{ session.get("user_id") }}</div>
+        <a href="{{url_for('logout')}}" class="btn btn-secondary my-2 my-sm-0" type="submit">Salir</a>
+      </div>
+      {% endif %}
+    </div>
+  </nav>
+
+</head>
+
+<body>
+  <div class="container pt-4">
+    {% block body %}
+    {% endblock %}
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="{{url_for('static', filename='js/main.js')}}"></script>
+</body>
+</html>

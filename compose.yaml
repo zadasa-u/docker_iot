@@ -128,5 +128,21 @@ services:
     restart: unless-stopped
     depends_on:
       - mariadb
+  rscw:
+    image: rscw
+    build:
+      context: ./rscw
+    container_name: rscw
+    environment:
+      - MYSQL_USER=${RSCW_USER}
+      - MYSQL_PASSWORD=${RSCW_PASS}
+      - MYSQL_DB=${RSCW_DB}
+      - MYSQL_HOST=${MARIADB_SERVER}
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
+    ports:
+      - 9000:9000
+    restart: unless-stopped
+    depends_on:
+      - mariadb
 volumes:
   portainer_data:

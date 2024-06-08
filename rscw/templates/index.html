@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="row">
+  <div class="col-md-7 mx-auto">
+    <div class="card card-body">
+      <form action="{{url_for('add_node')}}" method="POST">
+        <legend>Cargar nodo</legend>
+        <div class="form-group">
+          <label class="col-form-label mt-4" for="inputDefault">Alias del nodo</label>
+          <input type="text" class="form-control" id="inputDefault" data-ddg-inputtype="unknown" name="alias">
+        </div>
+        <div class="form-group">
+          <label class="col-form-label mt-4" for="tel">ID único del nodo</label>
+          <input type="text" class="form-control" id="inputDefault" data-ddg-inputtype="unknown" name="unique_id">
+        </div>
+        <button type="submit" class="btn btn-primary mt-4">guardar</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="row pt-5 ">
+  <div class="col-md-7 mx-auto">
+    <table class="table table-hover table-default">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Alias</th>
+          <th scope="col">ID único</th>
+          <th scope="col">acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for nodo in nodos %}
+        <tr>
+          <td>{{nodo.0}}</td>
+          <td>{{nodo.1}}</td>
+          <td>{{nodo.2}}</td>
+          <td>{{nodo.3}}</td>
+          <td>
+            <a href="{{url_for('get_node',id=nodo.0)}}" class="btn btn-secondary">editar</a>
+            <a href="{{url_for('delete_node',id=contacto.0)}}" class="btn btn-danger btn-borrar">borrar</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
