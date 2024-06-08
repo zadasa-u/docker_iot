@@ -9,8 +9,6 @@ from fastapi.encoders import jsonable_encoder
 
 logging.basicConfig(format='%(asctime)s - apiiot - %(levelname)s:%(message)s', level=logging.INFO, datefmt='%d/%m/%Y %H:%M:%S %z')
 
-logging.info("en la app")
-
 app = FastAPI(root_path="/api")
 url_object = URL.create(
     "mysql+asyncmy",
