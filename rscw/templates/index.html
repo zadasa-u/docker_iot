@@ -1,23 +1,41 @@
 {% extends "layout.html" %}
 {% block body %}
+
+<div class="row pt-5 ">
+  <div class="col-md-7 mx-auto">
+      <h3>Seleccione estación y configure el setpoint:</h3>
+      <form action="{{url_for('send')}}" method="POST">
+          <select name="unique_id">
+              {% for nodo in nodos %}
+              <option>{{ nodo.2 }} ({{ nodo.1 }})</option>
+              {% endfor %}
+          </select>
+          <input name="setpoint" type="number" min="0" max="50" placeholder="setpoint">
+          <input name="input_setpoint" type="submit" class="btn btn-secondary" value="Enviar">
+          <input name="input_destello" type="submit" class="btn btn-secondary" value="Activar Destello">
+      </form>
+  </div>
+</div>
+
 <div class="row">
   <div class="col-md-7 mx-auto">
     <div class="card card-body">
       <form action="{{url_for('add_node')}}" method="POST">
-        <legend>Cargar nodo</legend>
+        <legend>Registrar nuevo nodo</legend>
         <div class="form-group">
-          <label class="col-form-label mt-4" for="inputDefault">Alias del nodo</label>
-          <input type="text" class="form-control" id="inputDefault" data-ddg-inputtype="unknown" name="alias">
+          <label class="col-form-label mt-4">Alias del nodo</label>
+          <input name="alias" type="text" class="form-control">
         </div>
         <div class="form-group">
-          <label class="col-form-label mt-4" for="tel">ID único del nodo</label>
-          <input type="text" class="form-control" id="inputDefault" data-ddg-inputtype="unknown" name="unique_id">
+          <label class="col-form-label mt-4">ID único del nodo</label>
+          <input name="unique_id" type="text" class="form-control">
         </div>
         <button type="submit" class="btn btn-primary mt-4">guardar</button>
       </form>
     </div>
   </div>
 </div>
+
 <div class="row pt-5 ">
   <div class="col-md-7 mx-auto">
     <table class="table table-hover table-default">
@@ -25,8 +43,8 @@
         <tr>
           <th scope="col">ID</th>
           <th scope="col">Alias</th>
-          <th scope="col">ID único</th>
-          <th scope="col">acción</th>
+          <th scope="col">MAC</th>
+          <th scope="col">Acción</th>
         </tr>
       </thead>
       <tbody>
@@ -35,10 +53,9 @@
           <td>{{nodo.0}}</td>
           <td>{{nodo.1}}</td>
           <td>{{nodo.2}}</td>
-          <td>{{nodo.3}}</td>
           <td>
             <a href="{{url_for('get_node',id=nodo.0)}}" class="btn btn-secondary">editar</a>
-            <a href="{{url_for('delete_node',id=contacto.0)}}" class="btn btn-danger btn-borrar">borrar</a>
+            <a href="{{url_for('delete_node',id=nodo.0)}}" class="btn btn-danger btn-borrar">borrar</a>
           </td>
         </tr>
         {% endfor %}
