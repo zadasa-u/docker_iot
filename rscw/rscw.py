@@ -4,7 +4,7 @@ import os, logging, ssl
 from functools import wraps
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import check_password_hash, generate_password_hash
-from paho.mqtt.client import mqtt
+import paho.mqtt.client as mqtt
 
 logging.basicConfig(format='%(asctime)s - RSCW - %(levelname)s - %(message)s', level=logging.INFO)
 
