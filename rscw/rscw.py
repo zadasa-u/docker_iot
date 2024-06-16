@@ -192,8 +192,8 @@ def send():
         
         try:
             cliente.connect(
-                os.environ["DOMINIO"],
-                int(os.environ["PUERTO"]),
+                os.environ["SERVIDOR"],
+                int(os.environ["PUERTO_MQTTS"]),
             )
 
             logging.info(f"Enviando {comando} {valor_setpoint} al dispositivo {unique_id}")
