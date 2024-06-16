@@ -190,13 +190,13 @@ def send():
         else:
             return 'Es obligatorio seleccionar comando'
         
+        logging.info(f"Enviando {comando} {valor_comando} al dispositivo {unique_id}")
+
         try:
             cliente.connect(
                 os.environ["SERVIDOR"],
                 int(os.environ["PUERTO_MQTTS"]),
             )
-
-            logging.info(f"Enviando {comando} {valor_setpoint} al dispositivo {unique_id}")
 
             info = cliente.publish(f"iot/2024/{unique_id}/{comando}", valor_comando)
             if info.is_published():
