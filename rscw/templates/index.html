@@ -3,20 +3,59 @@
 
 <div class="row pt-5 ">
   <div class="col-md-7 mx-auto">
-      <h3>Seleccione estación y configure el setpoint:</h3>
-      <form action="{{url_for('send')}}" method="POST">
-          <select name="unique_id">
-              {% for nodo in nodos %}
-              <option>{{ nodo.2 }} ({{ nodo.1 }})</option>
-              {% endfor %}
-          </select>
-          <input name="setpoint" type="number" min="0" max="50" placeholder="setpoint">
-          <input name="input_setpoint" type="submit" class="btn btn-secondary" value="Enviar">
-          <input name="input_destello" type="submit" class="btn btn-secondary" value="Activar Destello">
+    <div class="card card-body">
+      <legend>Enviar comandos</legend>
+      <form action="{{ url_for('send') }}" method="post">
+
+        <label for="unique_id" class="mt-4">Alias de la estación:</label>
+        <select name="unique_id" class="btn btn-primary">
+          {% for nodo in nodos %}
+            <option value="{{ nodo.2 }}">{{ nodo.1 }}</option>
+          {% endfor %}
+        </select><br>
+        
+        <label for="comando" class="mt-4">Comando: </label>
+        <input type="radio" id="destello" name="comando" value="destello" checked="yes"><!--el id es usado para el script-->
+        <label for="destello">Destello</label>
+        <input type="radio" id="setpoint" name="comando" value="setpoint"><!--el id es usado para el script-->
+        <label for="setpoint">Setpoint</label><br>
+        
+        <div id="setpoint_input" style="display:none;">
+            <label for="valor_setpoint" class="col-form-label mt-4">Valor del setpoint:</label>
+            <input
+              type="number"
+              name="valor_setpoint"
+              value="25.0"
+              min="0" max="50" step="0.1"
+            ><br>
+        </div>
+        
+        <button type="submit" class="btn btn-primary mt-4">Enviar Comando</button>
+        
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+              var setpointRadio = document.getElementById('setpoint');
+              var destelloRadio = document.getElementById('destello');
+              var setpointInput = document.getElementById('setpoint_input');
+          
+              setpointRadio.addEventListener('change', function() {
+                  if (setpointRadio.checked) {
+                      setpointInput.style.display = 'block';
+                  }
+              });
+          
+              destelloRadio.addEventListener('change', function() {
+                  if (destelloRadio.checked) {
+                      setpointInput.style.display = 'none';
+                  }
+              });
+          });
+        </script>
       </form>
+    </div>
   </div>
 </div>
-<!--
+<br>
 <div class="row">
   <div class="col-md-7 mx-auto">
     <div class="card card-body">
@@ -30,7 +69,7 @@
           <label class="col-form-label mt-4">ID único del nodo</label>
           <input name="unique_id" type="text" class="form-control">
         </div>
-        <button type="submit" class="btn btn-primary mt-4">guardar</button>
+        <button type="submit" class="btn btn-primary mt-4">Guardar</button>
       </form>
     </div>
   </div>
@@ -44,7 +83,7 @@
           <th scope="col">ID</th>
           <th scope="col">Alias</th>
           <th scope="col">MAC</th>
-          <th scope="col">Acción</th>
+          <th scope="col">Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -63,5 +102,5 @@
     </table>
   </div>
 </div>
--->
+
 {% endblock %}

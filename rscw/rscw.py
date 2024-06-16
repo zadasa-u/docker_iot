@@ -4,7 +4,7 @@ import os, logging, ssl
 from functools import wraps
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import check_password_hash, generate_password_hash
-#from paho.mqtt.client import mqtt
+from paho.mqtt.client import mqtt
 
 logging.basicConfig(format='%(asctime)s - RSCW - %(levelname)s - %(message)s', level=logging.INFO)
 
@@ -19,24 +19,20 @@ app.config["MYSQL_USER"] = os.environ["MYSQL_USER"]
 app.config["MYSQL_PASSWORD"] = os.environ["MYSQL_PASSWORD"]
 app.config["MYSQL_DB"] = os.environ["MYSQL_DB"]
 app.config["MYSQL_HOST"] = os.environ["MYSQL_HOST"]
-app.config['PERMANENT_SESSION_LIFETIME']=180
+app.config['PERMANENT_SESSION_LIFETIME']=600
 mysql = MySQL(app)
 
 # cliente MQTT
-'''
 tls_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 tls_context.verify_mode = ssl.CERT_REQUIRED
 tls_context.check_hostname = True
 tls_context.load_default_certs()
 
 cliente = mqtt.Client()
-
 cliente.tls_set_context(tls_context)
-
 cliente.username_pw_set(os.environ["MQTT_USR"],os.environ["MQTT_PASS"])
-'''
-# rutas
 
+# rutas
 def require_login(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -49,12 +45,8 @@ def require_login(f):
 def registrar():
     """Registrar usuario"""
     if request.method == "POST":
-
-        # Ensure username was submitted
         if not request.form.get("usuario"):
             return "el campo usuario es obligatorio"
-
-        # Ensure password was submitted
         elif not request.form.get("password"):
             return "el campo contraseña es obligatorio"
 
@@ -72,10 +64,8 @@ def registrar():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        # Ensure username was submitted
         if not request.form.get("usuario"):
             return "el campo usuario es obligatorio"
-        # Ensure password was submitted
         elif not request.form.get("password"):
             return "el campo contraseña es obligatorio"
 
@@ -89,7 +79,8 @@ def login():
                 session.permanent = True
                 
                 session["user_id"]=request.form.get("usuario")
-                session["tema"] = "claro"
+                session["user_db_id"] = rows[0] # el id en la DB
+                session["tema"] = rows[3] # por defecto "claro"
 
                 logging.info("se autenticó correctamente")
                 return redirect(url_for('index'))
@@ -114,9 +105,7 @@ def add_node():
     if request.method == 'POST':
         alias = request.form['alias']
         unique_id = request.form['unique_id']
-
-        logging.info(f"recibido: {alias}, {unique_id}")
-        
+        logging.info(f"Alias: {alias}, Unique ID: {unique_id}")
         cur = mysql.connection.cursor()
         cur.execute("INSERT INTO nodos (alias, unique_id) VALUES (%s,%s)", (alias, unique_id))
         if mysql.connection.affected_rows():
@@ -174,46 +163,49 @@ def change_theme():
         session["tema"] = "oscuro"
     else:
         session["tema"] = "claro"
-    
+
     logging.info(f'Tema seleccionado: {session["tema"]}')
 
+    cur = mysql.connection.cursor()
+    cur.execute("UPDATE usuarios SET tema=%s WHERE id=%s", (session["tema"], session["user_db_id"]))
+    mysql.connection.commit()
+    
     return redirect(url_for('index'))
 
 @app.route('/send', methods=['POST'])
 def send():
     if request.method == 'POST':
-        
         if not request.form.get('unique_id'):
             return 'El campo "id" es obligatorio'
-        
         elif not request.form.get('setpoint'):
             return 'El campo "setpoint" es obligatorio'
-
-        unique_id = request.form['unique_id'].split()[0] # elimina el alias
-        setpoint = request.form['setpoint']
-
-        logging.info(f"Recibido: {unique_id}, {setpoint}")
         
-        '''
+        unique_id = request.form.get('unique_id')
+        comando = request.form.get('comando')
+        
+        if comando == 'setpoint':
+            valor_comando = request.form.get('valor_setpoint')
+
+            logging.info(f"Enviando setpoint {valor_setpoint} al dispositivo {unique_id}")
+
+        elif comando == 'destello':
+            valor_comando = 'ON'
+
+            logging.info(f"Enviando comando de destello al dispositivo {unique_id}")
+        else:
+            return 'Es obligatorio seleccionar comando'
+        
         try:
-            
-            logging.info(f'Recibida informacion: id={unique_id} - setpoint={setpoint}')
-            
             cliente.connect(
                 os.environ["DOMINIO"],
                 int(os.environ["PUERTO"]),
             )
-
-            info = cliente.publish(f"iot/2024/{unique_id}/setpoint",setpoint)
+            info = cliente.publish(f"iot/2024/{unique_id}/{comando}", valor_comando)
             if info.is_published():
                 logging.info("Publicado")
             else:
                 logging.info("Error")
-
             cliente.disconnect()
-
         except:
-            logging.info("Error durante el envio del setpoint")
-        '''
-
+            logging.info("Ocurrio un error en el cliente MQTT")
     return redirect(url_for("index"))
