@@ -177,21 +177,16 @@ def send():
     if request.method == 'POST':
         if not request.form.get('unique_id'):
             return 'El campo "id" es obligatorio'
-        elif not request.form.get('setpoint'):
-            return 'El campo "setpoint" es obligatorio'
+        #elif not request.form.get('setpoint'):
+        #    return 'El campo "setpoint" es obligatorio'
         
         unique_id = request.form.get('unique_id')
         comando = request.form.get('comando')
         
         if comando == 'setpoint':
             valor_comando = request.form.get('valor_setpoint')
-
-            logging.info(f"Enviando setpoint {valor_setpoint} al dispositivo {unique_id}")
-
         elif comando == 'destello':
             valor_comando = 'ON'
-
-            logging.info(f"Enviando comando de destello al dispositivo {unique_id}")
         else:
             return 'Es obligatorio seleccionar comando'
         
@@ -200,6 +195,9 @@ def send():
                 os.environ["DOMINIO"],
                 int(os.environ["PUERTO"]),
             )
+
+            logging.info(f"Enviando {comando} {valor_setpoint} al dispositivo {unique_id}")
+
             info = cliente.publish(f"iot/2024/{unique_id}/{comando}", valor_comando)
             if info.is_published():
                 logging.info("Publicado")
