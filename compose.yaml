@@ -142,5 +142,13 @@ services:
     restart: unless-stopped
     depends_on:
       - mariadb
+  node-red:
+    image: nodered/node-red:latest
+    container_name: node-red
+    ports:
+      - 1880:1880
+    volumes:
+      - ./node-red:/data
+    restart: unless-stopped
 volumes:
   portainer_data:
