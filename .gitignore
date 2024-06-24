@@ -138,6 +138,7 @@ grafana/
 mosquitto/
 wireguard/
 mariadb/
+node-red/
 !swag/
 swag/*
 !swag/nginx/

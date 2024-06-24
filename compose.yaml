@@ -147,6 +147,11 @@ services:
     container_name: node-red
     ports:
       - 1880:1880
+    environment:
+      - MQTT_USR=${MQTT_USR}
+      - MQTT_PASS=${MQTT_PASS}
+      - PUERTO_MQTTS=${PUERTO_MQTTS}
+      - SERVIDOR=${SERVIDOR}
     volumes:
       - ./node-red:/data
     restart: unless-stopped
