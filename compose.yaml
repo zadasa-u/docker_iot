@@ -152,8 +152,16 @@ services:
       - MQTT_PASS=${MQTT_PASS}
       - PUERTO_MQTTS=${PUERTO_MQTTS}
       - SERVIDOR=${SERVIDOR}
+      - INFLUX_SERVER=${INFLUX_SERVER}
+      - INFLUX_TOKEN=${INFLUX_TOKEN}
     volumes:
       - ./node-red:/data
+    restart: unless-stopped
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - 8086:8086
     restart: unless-stopped
 volumes:
   portainer_data:
