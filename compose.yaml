@@ -34,6 +34,7 @@ services:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_USER_PASS=${MARIADB_USER_PASS}
       - MARIADB_DB=${MARIADB_DB}
+      - MARIADB_TABLE=${MARIADB_TABLE}
       - MQTT_USR=${MQTT_USR}
       - MQTT_PASS=${MQTT_PASS}
       - PUERTO_MQTTS=${PUERTO_MQTTS}
@@ -154,6 +155,8 @@ services:
       - SERVIDOR=${SERVIDOR}
       - INFLUX_SERVER=${INFLUX_SERVER}
       - INFLUX_TOKEN=${INFLUX_TOKEN}
+      - TB_TOKEN=${TB_TOKEN}
+      - TELEGRAM_CHATID=${TELEGRAM_CHATID}
     volumes:
       - ./node-red:/data
     restart: unless-stopped

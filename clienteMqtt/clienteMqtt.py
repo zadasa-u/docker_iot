@@ -10,6 +10,8 @@ async def main():
     tls_context.check_hostname = True
     tls_context.load_default_certs()
 
+    tabla = os.environ["MARIADB_TABLE"]
+
     async with aiomqtt.Client(
         os.environ["SERVIDOR"],
         username=os.environ["MQTT_USR"],
@@ -22,7 +24,7 @@ async def main():
             logging.info(str(message.topic) + ": " + message.payload.decode("utf-8"))
             dispositivo=str(message.topic).split('/')[-1]
             datos=json.loads(message.payload.decode('utf8'))
-            sql = "INSERT INTO `mediciones` (`sensor_id`, `temperatura`, `humedad`) VALUES (%s, %s, %s)"
+            sql = f"INSERT INTO `{tabla}` (`sensor_id`, `temperatura`, `humedad`) VALUES (%s, %s, %s)"
             try:
                 conn = await aiomysql.connect(host=os.environ["MARIADB_SERVER"], port=3306,
                                             user=os.environ["MARIADB_USER"],
