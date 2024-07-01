@@ -165,5 +165,30 @@ services:
     ports:
       - 8086:8086
     restart: unless-stopped
+  wireguard:
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Argentina/Buenos_Aires
+      - SERVERURL=${DOMINIO}
+      - SERVERPORT=${PUERTO}
+      - PEERS=peer1,peer2   #cambiar
+      - PEERDNS=auto
+      - INTERNAL_SUBNET=10.13.13.0 #optional
+      - ALLOWEDIPS=0.0.0.0/0
+      - PERSISTENTKEEPALIVE_PEERS=
+      - LOG_CONFS=true
+    volumes:
+      - ./wireguard:/config
+    ports:
+      - ${PUERTO}:51820/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
 volumes:
   portainer_data:
