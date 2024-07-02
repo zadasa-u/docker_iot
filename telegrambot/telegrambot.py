@@ -35,7 +35,7 @@ async def kill(update: Update, context):
         
 async def medicion(update: Update, context):
     logging.info(update.message.text)
-    sql = f"SELECT timestamp, {update.message.text} FROM mediciones ORDER BY timestamp DESC LIMIT 1"
+    sql = f"SELECT timestamp, {update.message.text} FROM {os.environ['MARIADB_TABLE']} ORDER BY timestamp DESC LIMIT 1"
     conn = await aiomysql.connect(host=os.environ["MARIADB_SERVER"], port=3306,
                                     user=os.environ["MARIADB_USER"],
                                     password=os.environ["MARIADB_USER_PASS"],
@@ -55,7 +55,7 @@ async def medicion(update: Update, context):
 
 async def graficos(update: Update, context):
     logging.info(update.message.text)
-    sql = f"SELECT timestamp, {update.message.text.split()[1]} FROM mediciones where id mod 2 = 0 AND timestamp >= NOW() - INTERVAL 1 DAY ORDER BY timestamp"
+    sql = f"SELECT timestamp, {update.message.text.split()[1]} FROM {os.environ['MARIADB_TABLE']} where id mod 2 = 0 AND timestamp >= NOW() - INTERVAL 1 DAY ORDER BY timestamp"
     conn = await aiomysql.connect(host=os.environ["MARIADB_SERVER"], port=3306,
                                     user=os.environ["MARIADB_USER"],
                                     password=os.environ["MARIADB_USER_PASS"],
