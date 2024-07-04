@@ -156,6 +156,9 @@ services:
       - INFLUX_TOKEN=${INFLUX_TOKEN}
       - TELEGRAM_CHATID=${TELEGRAM_CHATID}
       - TB_TOKEN=${TB_TOKEN}
+      - BASE_TOPIC=${BASE_TOPIC}
+      - LED_COMMAND_TOPIC=${LED_COMMAND_TOPIC}
+      - LED_RESPONSE_TOPIC=${LED_RESPONSE_TOPIC}
     volumes:
       - ./node-red:/data
     restart: unless-stopped
