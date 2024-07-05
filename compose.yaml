@@ -109,6 +109,11 @@ services:
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_USER_PASS=${MARIADB_USER_PASS}
       - MARIADB_DB=${MARIADB_DB}
+      - MARIADB_TABLE=${MARIADB_TABLE}
+      - MIN_TEMP=${MIN_TEMP}
+      - MAX_TEMP=${MAX_TEMP}
+      - OPT_MIN_TEMP=${OPT_MIN_TEMP}
+      - OPT_MAX_TEMP=${OPT_MAX_TEMP}
     restart: unless-stopped
     depends_on:
       - mariadb
